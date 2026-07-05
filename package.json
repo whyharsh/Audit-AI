@@ -9,6 +9,7 @@
   "scripts": {
     "build": "bun run --filter @audit-evidence/engine build",
     "check": "bun run --filter @audit-evidence/engine check",
+    "dev": "bun run --filter @audit-evidence/web dev",
     "test": "bun run --filter @audit-evidence/engine test",
     "typecheck": "bun run --filter @audit-evidence/engine typecheck"
   },

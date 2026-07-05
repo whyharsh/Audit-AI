@@ -105,10 +105,6 @@ const parserVersion = "0.1.0" as SemverString;
 const defaultRecordedAt = "2025-04-05T10:00:00+05:30" as IsoTimestamp;
 const defaultUploadedBy = "user-demo-importer" as UserId;
 
-type MutableOptional<TValue> = {
-  -readonly [TKey in keyof TValue]?: TValue[TKey];
-};
-
 export function materializeSyntheticTransactionGraph(
   input: SyntheticDatasetInput,
   options: SyntheticTransactionGraphOptions = {}
@@ -290,22 +286,25 @@ function buildVoucherFact(
     ),
     parser: tallyParser()
   });
-  const fact = withOptionalFields(
-    {
-      ...engagementRef(context.dataset),
-      id: graphFactId(context.dataset.fixtureId, "Voucher", sourceRef),
-      kind: "Voucher" as const,
-      provenanceRecordId: provenance.id,
-      ingestionRunId: context.ingestionRunId,
-      recordedAt: context.recordedAt,
-      voucherKind: voucher.voucherKind,
-      voucherNumber: voucher.voucherNumber,
-      voucherDate: voucher.voucherDate,
-      totalAmountPaise: voucher.totalAmountPaise,
-      tallyGuid: voucher.id
-    },
-    optionalVoucherFields(voucher, partyIdsByGuid, document)
-  );
+  const partyId = voucher.partyGuid === undefined
+    ? undefined
+    : partyIdsByGuid.get(voucher.partyGuid);
+  const fact: Voucher = {
+    ...engagementRef(context.dataset),
+    id: graphFactId(context.dataset.fixtureId, "Voucher", sourceRef),
+    kind: "Voucher",
+    provenanceRecordId: provenance.id,
+    ingestionRunId: context.ingestionRunId,
+    recordedAt: context.recordedAt,
+    voucherKind: voucher.voucherKind,
+    voucherNumber: voucher.voucherNumber,
+    voucherDate: voucher.voucherDate,
+    totalAmountPaise: voucher.totalAmountPaise,
+    tallyGuid: voucher.id,
+    ...(partyId === undefined ? {} : { partyId }),
+    ...(document === undefined ? {} : { evidenceDate: document.documentDate }),
+    ...(voucher.narration === undefined ? {} : { narration: voucher.narration })
+  };
   indexFact(context, sourceRef, fact);
   return { fact, sourceRef };
 }
@@ -364,19 +363,24 @@ function buildEditLogEventFact(
     ),
     parser: editLogParser()
   });
-  const fact = withOptionalFields(
-    {
-      ...engagementRef(context.dataset),
-      id: graphFactId(context.dataset.fixtureId, "EditLogEvent", sourceRef),
-      kind: "EditLogEvent" as const,
-      provenanceRecordId: provenance.id,
-      ingestionRunId: context.ingestionRunId,
-      recordedAt: context.recordedAt,
-      eventKind: event.eventKind,
-      occurredAt: event.occurredAt
-    },
-    optionalEditLogEventFields(event, voucherIdsByGuid)
-  );
+  const voucherId = event.voucherGuid === undefined
+    ? undefined
+    : voucherIdsByGuid.get(event.voucherGuid);
+  const fact: EditLogEvent = {
+    ...engagementRef(context.dataset),
+    id: graphFactId(context.dataset.fixtureId, "EditLogEvent", sourceRef),
+    kind: "EditLogEvent",
+    provenanceRecordId: provenance.id,
+    ingestionRunId: context.ingestionRunId,
+    recordedAt: context.recordedAt,
+    eventKind: event.eventKind,
+    occurredAt: event.occurredAt,
+    ...(event.userName === undefined ? {} : { userName: event.userName }),
+    ...(voucherId === undefined ? {} : { voucherId }),
+    ...(event.fieldName === undefined ? {} : { fieldName: event.fieldName }),
+    ...(event.beforeValue === undefined ? {} : { beforeValue: event.beforeValue }),
+    ...(event.afterValue === undefined ? {} : { afterValue: event.afterValue })
+  };
   indexFact(context, sourceRef, fact);
   return { fact, sourceRef };
 }
@@ -807,55 +811,6 @@ function engagementRef(dataset: SyntheticDataset) {
     clientId: dataset.engagement.clientId,
     engagementId: dataset.engagement.engagementId
   };
-}
-
-function optionalVoucherFields(
-  voucher: SyntheticVoucher,
-  partyIdsByGuid: ReadonlyMap<string, GraphFactId>,
-  document: SyntheticSourceDocument | undefined
-): Partial<Voucher> {
-  const output: MutableOptional<Voucher> = {};
-  if (voucher.partyGuid !== undefined) {
-    const partyId = partyIdsByGuid.get(voucher.partyGuid);
-    if (partyId !== undefined) {
-      output.partyId = partyId;
-    }
-  }
-  if (document !== undefined) {
-    output.evidenceDate = document.documentDate;
-  }
-  if (voucher.narration !== undefined) {
-    output.narration = voucher.narration;
-  }
-
-  return output;
-}
-
-function optionalEditLogEventFields(
-  event: SyntheticEditLogEvent,
-  voucherIdsByGuid: ReadonlyMap<string, GraphFactId>
-): Partial<EditLogEvent> {
-  const output: MutableOptional<EditLogEvent> = {};
-  if (event.userName !== undefined) {
-    output.userName = event.userName;
-  }
-  if (event.voucherGuid !== undefined) {
-    const voucherId = voucherIdsByGuid.get(event.voucherGuid);
-    if (voucherId !== undefined) {
-      output.voucherId = voucherId;
-    }
-  }
-  if (event.fieldName !== undefined) {
-    output.fieldName = event.fieldName;
-  }
-  if (event.beforeValue !== undefined) {
-    output.beforeValue = event.beforeValue;
-  }
-  if (event.afterValue !== undefined) {
-    output.afterValue = event.afterValue;
-  }
-
-  return output;
 }
 
 function withOptionalFields<TBase extends object, TOptional extends object>(

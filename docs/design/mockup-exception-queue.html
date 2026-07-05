@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workpaper design reference · Exception queue</title>
+<style>
+  /* Workpaper design language reference rendering. Tokens per DESIGN.md section 4. */
+  :root {
+    --paper: #FBFAF7;
+    --paper-shade: #F3F1EA;
+    --ink: #1C1B18;
+    --ink-mute: #6B675C;
+    --hairline: #DAD6CA;
+    --accent: #1F4B6E;
+    --status-exception: #A23B2E;
+    --status-untestable: #8A6100;
+    --status-pass: #5F7464;
+    --status-misconfigured: #45414E;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .topbar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .engagement { font-size: 14px; }
+  .engagement .firm { font-weight: 600; }
+  .engagement .sep { color: var(--ink-mute); padding: 0 6px; }
+  .topbar-right { display: flex; align-items: baseline; gap: 20px; }
+
+  .seal-state {
+    font-size: 12px;
+    color: var(--ink-mute);
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    padding: 2px 8px;
+  }
+
+  .altitude { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.02em; }
+  .altitude .here { color: var(--ink); font-weight: 600; }
+  .altitude .sep { padding: 0 6px; }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 20px 24px 48px; }
+
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .runline { font-size: 13px; color: var(--ink-mute); margin-bottom: 20px; }
+
+  .untestable-band {
+    border: 1px solid var(--hairline);
+    border-left: 3px solid var(--status-untestable);
+    background: var(--paper-shade);
+    border-radius: 2px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+  .untestable-band .word {
+    color: var(--status-untestable);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    margin-right: 10px;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+  .filters select {
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    padding: 3px 8px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    background: var(--paper-shade);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+  tbody td {
+    border-bottom: 1px solid var(--hairline);
+    padding: 7px 10px;
+    vertical-align: baseline;
+  }
+  td.num, th.num { text-align: right; }
+  td.date { white-space: nowrap; }
+
+  tr.group td {
+    background: var(--paper);
+    border-bottom: 1px solid var(--hairline);
+    padding-top: 16px;
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  tr.group .control-id { font-family: var(--mono); color: var(--ink); }
+
+  .status {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .status.exception { color: var(--status-exception); }
+  .status.untestable { color: var(--status-untestable); }
+  .status.pass { color: var(--status-pass); }
+
+  .mono { font-family: var(--mono); font-size: 12px; }
+  .mute { color: var(--ink-mute); }
+  .disposition { font-size: 12px; color: var(--ink-mute); white-space: nowrap; }
+  .disposition.overridden { color: var(--ink); }
+
+  tr.selected td { background: #EFF3F6; }
+
+  .drilldown {
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    margin: 0 0 24px;
+    background: var(--paper);
+  }
+  .drilldown-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--hairline);
+    flex-wrap: wrap;
+  }
+  .drilldown-head .title { font-weight: 600; }
+  .hash-chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    padding: 1px 6px;
+    color: var(--ink-mute);
+    cursor: pointer;
+  }
+  .replay-line {
+    font-size: 12px;
+    color: var(--ink-mute);
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .facts { position: relative; padding: 12px 16px 16px; }
+  .facts table { max-width: 680px; }
+  .facts h2, .override h2 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .provenance {
+    position: absolute;
+    right: 16px;
+    top: 44px;
+    width: 340px;
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(28, 27, 24, 0.08);
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .provenance dt { color: var(--ink-mute); float: left; clear: left; width: 92px; }
+  .provenance dd { margin-left: 100px; font-family: var(--mono); word-break: break-all; }
+  .provenance .open-link { display: inline-block; margin-top: 8px; font-family: var(--sans); }
+
+  .annotation { font-size: 11px; color: var(--ink-mute); font-style: italic; }
+
+  .override {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .override .form { padding: 14px 16px; border-right: 1px solid var(--hairline); }
+  .override label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin: 12px 0 4px;
+  }
+  .override label:first-of-type { margin-top: 0; }
+  .override textarea {
+    width: 100%;
+    font: 13px/1.5 var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    padding: 8px;
+    resize: vertical;
+  }
+  .override .actor { font-size: 12px; color: var(--ink-mute); margin-top: 12px; }
+
+  .buttons { margin-top: 16px; display: flex; gap: 8px; }
+  button {
+    font: 600 13px var(--sans);
+    border-radius: 2px;
+    padding: 7px 14px;
+    cursor: pointer;
+  }
+  .primary { background: var(--accent); color: var(--paper); border: 1px solid var(--accent); }
+  .secondary { background: var(--paper); color: var(--accent); border: 1px solid var(--hairline); }
+
+  .preview { padding: 14px 16px; background: var(--paper-shade); }
+  .preview-sheet {
+    background: #FFFFFF;
+    border: 1px solid var(--hairline);
+    padding: 18px 20px;
+    font-family: var(--serif);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .preview-sheet .wp-head {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+  .preview-sheet .wp-field { margin-bottom: 8px; }
+  .preview-sheet .wp-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--ink-mute);
+    display: block;
+  }
+  .preview-sheet .wp-mono { font-family: var(--mono); font-size: 11.5px; }
+
+  .queue-footer {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="engagement">
+    <span class="firm">Sharma &amp; Rao Associates</span><span class="sep">·</span>
+    Meridian Textiles Pvt Ltd<span class="sep">·</span>FY 2025-26
+  </div>
+  <div class="topbar-right">
+    <span class="seal-state">Unsealed</span>
+    <nav class="altitude" aria-label="Altitude">
+      <span class="here">Trail</span><span class="sep">·</span>Graph<span class="sep">·</span>Source
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1>Exception queue</h1>
+  <p class="runline">5 controls run against ingestion ing-3f92c1 on 04 Jul 2026 · population 4,182 vouchers</p>
+
+  <div class="untestable-band">
+    <span class="word">UNTESTABLE</span>
+    Cutoff testing could not run for 214 vouchers. Evidence dates are missing for these records.
+    <a href="#">View the 214 vouchers</a>
+  </div>
+
+  <div class="filters">
+    <select><option>All controls</option></select>
+    <select><option>All statuses</option></select>
+    <select><option>All dispositions</option></select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Status</th><th>Reference</th><th>Party</th>
+        <th class="num">Amount, &#8377;</th><th>Date</th>
+        <th class="num">Materiality</th><th>Disposition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group"><td colspan="7">
+        <span class="control-id">editlog-disabled-period 1.0.0</span> · Rule 11(g) · 1 exception
+      </td></tr>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td>Edit log disabled 12 Aug 2025 to 03 Sep 2025</td>
+        <td class="mute">22 days, 517 vouchers posted in window</td>
+        <td class="num mute">n/a</td>
+        <td class="date">12 Aug 2025</td>
+        <td class="num">high</td>
+        <td class="disposition">Open</td>
+      </tr>
+
+      <tr class="group"><td colspan="7">
+        <span class="control-id">editlog-gap 1.0.0</span> · Rule 11(g) · 1 exception
+      </td></tr>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td>Log silent 18 Jan 2026 to 09 Feb 2026</td>
+        <td class="mute">412 vouchers posted while log recorded nothing</td>
+        <td class="num mute">n/a</td>
+        <td class="date">18 Jan 2026</td>
+        <td class="num">high</td>
+        <td class="disposition">Open</td>
+      </tr>
+
+      <tr class="group"><td colspan="7">
+        <span class="control-id">duplicate-payment 1.0.0</span> · 2 exceptions
+      </td></tr>
+      <tr class="selected">
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td><span class="mono">PV-1123</span> / <span class="mono">PV-1187</span></td>
+        <td>Kanchan Fabrics</td>
+        <td class="num">4,85,000.00</td>
+        <td class="date">03 Nov 2025</td>
+        <td class="num">0.6%</td>
+        <td class="disposition">Open</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="drilldown" aria-label="Finding drill-down">
+    <div class="drilldown-head">
+      <span class="status exception">EXCEPTION</span>
+      <span class="title">Same party and amount paid twice within 2 days</span>
+      <span class="mono mute">duplicate-payment 1.0.0 · pass: windowed</span>
+      <span class="hash-chip" title="Click to copy full finding id">f7d09a3c</span>
+      <span class="annotation">(row shown expanded)</span>
+    </div>
+    <div class="replay-line">Re-running this control reproduces this finding byte for byte.</div>
+
+    <div class="facts">
+      <h2>Facts examined</h2>
+      <table>
+        <thead>
+          <tr><th>Voucher</th><th>Kind</th><th>Party</th><th class="num">Amount, &#8377;</th><th>Date</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">PV-1123</td><td>payment</td><td>Kanchan Fabrics</td>
+            <td class="num">4,85,000.00</td><td class="date">03 Nov 2025</td>
+            <td><a href="#">daybook-fy26.xml</a></td>
+          </tr>
+          <tr>
+            <td class="mono">PV-1187</td><td>payment</td><td>Kanchan Fabrics</td>
+            <td class="num">4,85,000.00</td><td class="date">05 Nov 2025</td>
+            <td><a href="#">daybook-fy26.xml</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <aside class="provenance" aria-label="Provenance">
+        <dl>
+          <dt>Artifact</dt><dd>8f3a2c1d</dd>
+          <dt>Location</dt><dd>TALLYMESSAGE[214]/VOUCHER</dd>
+          <dt>Parser</dt><dd>tally-xml 1.0.0</dd>
+          <dt>Ingestion</dt><dd>ing-3f92c1</dd>
+        </dl>
+        <a class="open-link" href="#">Open source at location</a>
+        <div class="annotation">(provenance popover, shown open)</div>
+      </aside>
+    </div>
+
+    <div class="override">
+      <div class="form">
+        <h2>Record override</h2>
+        <label for="reason">Reason</label>
+        <textarea id="reason" rows="5">Second payment PV-1187 reverses a failed NEFT on PV-1123. Bank statement line 214 dated 05 Nov 2025 shows the first transfer returned the same day. Both vouchers reference invoice KF/2025/0448. No amount was paid twice.</textarea>
+        <label for="materiality">Materiality justification</label>
+        <textarea id="materiality" rows="3">Gross exposure 4,85,000.00 is 0.6 percent of the materiality benchmark 8,10,00,000.00. Net exposure is nil given the reversal evidence on the bank statement.</textarea>
+        <p class="actor">Recorded as CA R. Sharma, partner · 05 Jul 2026</p>
+        <div class="buttons">
+          <button class="primary" type="button">Record override</button>
+          <button class="secondary" type="button">Open source document</button>
+        </div>
+      </div>
+      <div class="preview">
+        <h2>As it will appear in the sealed workpaper</h2>
+        <div class="preview-sheet">
+          <div class="wp-head">Exception register · entry 3 of 8</div>
+          <div class="wp-field">
+            <span class="wp-label">Finding</span>
+            Same party and amount paid twice within 2 days. Payment vouchers PV-1123 and
+            PV-1187, Kanchan Fabrics, 4,85,000.00 each, dated 03 Nov 2025 and 05 Nov 2025.
+          </div>
+          <div class="wp-field">
+            <span class="wp-label">Control</span>
+            <span class="wp-mono">duplicate-payment 1.0.0</span>, windowed pass, finding
+            <span class="wp-mono">f7d09a3c</span>
+          </div>
+          <div class="wp-field">
+            <span class="wp-label">Disposition</span>
+            Overridden by CA R. Sharma, partner, 05 Jul 2026. Second payment PV-1187
+            reverses a failed NEFT on PV-1123. Bank statement line 214 dated 05 Nov 2025
+            shows the first transfer returned the same day. Both vouchers reference invoice
+            KF/2025/0448. No amount was paid twice.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <table>
+    <tbody>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td><span class="mono">PV-0871</span> / <span class="mono">PV-0902</span></td>
+        <td>Ostwal Transport Co</td>
+        <td class="num">1,20,000.00</td>
+        <td class="date">14 Dec 2025</td>
+        <td class="num">0.1%</td>
+        <td class="disposition overridden">Overridden</td>
+      </tr>
+
+      <tr class="group"><td colspan="7">
+        <span class="control-id">cutoff-yearend 1.0.0</span> · 3 exceptions
+      </td></tr>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td><span class="mono">SV-2201</span> dated in FY, evidence 04 Apr 2026</td>
+        <td>Arihant Retail</td>
+        <td class="num">9,42,750.00</td>
+        <td class="date">31 Mar 2026</td>
+        <td class="num">1.2%</td>
+        <td class="disposition">Open</td>
+      </tr>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td><span class="mono">SV-2214</span> dated in FY, evidence 07 Apr 2026</td>
+        <td>Nimbus Exports</td>
+        <td class="num">6,05,000.00</td>
+        <td class="date">31 Mar 2026</td>
+        <td class="num">0.7%</td>
+        <td class="disposition">Open</td>
+      </tr>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td><span class="mono">PU-1808</span> dated next FY, evidence 28 Mar 2026</td>
+        <td>Deccan Yarns</td>
+        <td class="num">3,18,400.00</td>
+        <td class="date">02 Apr 2026</td>
+        <td class="num">0.4%</td>
+        <td class="disposition">Open</td>
+      </tr>
+
+      <tr class="group"><td colspan="7">
+        <span class="control-id">manual-journal-risk 1.0.0</span> · 1 exception
+      </td></tr>
+      <tr>
+        <td><span class="status exception">EXCEPTION</span></td>
+        <td>5 round-sum journals clustered at period end</td>
+        <td class="mute">29 Mar 2026 to 31 Mar 2026</td>
+        <td class="num">75,00,000.00</td>
+        <td class="date">29 Mar 2026</td>
+        <td class="num">9.3%</td>
+        <td class="disposition">Open</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="queue-footer">
+    4,182 vouchers in population · 8 exceptions, 1 overridden · 1 untestable subset ·
+    <span class="status pass">PASS</span> summaries recorded for populations with nothing to report
+  </p>
+</main>
+
+</body>
+</html>

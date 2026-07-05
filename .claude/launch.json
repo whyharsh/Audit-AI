@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["--bun", "run", "--cwd", "apps/web", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "design-mockup",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "-e",
+        "Bun.serve({ port: 4173, fetch: () => new Response(Bun.file('docs/design/mockup-exception-queue.html'), { headers: { 'content-type': 'text/html; charset=utf-8' } }) }); console.log('design mockup on http://localhost:4173');"
+      ],
+      "port": 4173
+    },
+    {
+      "name": "design-mockup-trail",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "-e",
+        "Bun.serve({ port: 4174, fetch: () => new Response(Bun.file('docs/design/mockup-trail-graph.html'), { headers: { 'content-type': 'text/html; charset=utf-8' } }) }); console.log('trail graph mockup on http://localhost:4174');"
+      ],
+      "port": 4174
+    }
+  ]
+}

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workpaper design reference · Trail graph</title>
+<style>
+  /* Workpaper design language reference rendering. Tokens per DESIGN.md sections 4, 8a, 8b. */
+  :root {
+    --paper: #FBFAF7;
+    --paper-shade: #F3F1EA;
+    --ink: #1C1B18;
+    --ink-mute: #6B675C;
+    --hairline: #DAD6CA;
+    --edge: #8C887C;
+    --accent: #1F4B6E;
+    --status-exception: #A23B2E;
+    --status-untestable: #8A6100;
+    --status-pass: #5F7464;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .topbar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .engagement { font-size: 14px; }
+  .engagement .firm { font-weight: 600; }
+  .engagement .sep { color: var(--ink-mute); padding: 0 6px; }
+  .altitude { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.02em; }
+  .altitude .here { color: var(--ink); font-weight: 600; }
+  .altitude .sep { padding: 0 6px; }
+
+  main { max-width: 1140px; margin: 0 auto; padding: 20px 24px 48px; }
+
+  .finding-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  h1 { font-size: 20px; font-weight: 600; }
+  .status {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .status.exception { color: var(--status-exception); }
+  .mono { font-family: var(--mono); font-size: 12px; }
+  .mute { color: var(--ink-mute); }
+  .hash-chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    padding: 1px 6px;
+    color: var(--ink-mute);
+  }
+
+  .toggle { display: inline-flex; border: 1px solid var(--hairline); border-radius: 2px; margin-left: auto; }
+  .toggle span {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    color: var(--ink-mute);
+  }
+  .toggle .active { background: var(--accent); color: var(--paper); }
+
+  .replay-line { font-size: 12px; color: var(--ink-mute); margin-bottom: 20px; }
+
+  .storey {
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    background: var(--paper);
+    margin-bottom: 8px;
+  }
+  .storey-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  .storey-head .name { font-weight: 600; color: var(--ink); letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px; }
+
+  svg { display: block; width: 100%; height: auto; }
+
+  svg text { font-family: var(--sans); fill: var(--ink); }
+  .n-kind { font-size: 9px; letter-spacing: 0.08em; fill: var(--ink-mute); }
+  .n-kind-exc { fill: var(--status-exception); font-weight: 600; }
+  .n-value { font-size: 13px; font-weight: 600; }
+  .n-meta { font-family: var(--mono); font-size: 10.5px; fill: var(--ink-mute); }
+  .e-label { font-family: var(--mono); font-size: 9.5px; fill: var(--ink-mute); }
+  .ghost text { fill: var(--ink-mute); }
+
+  .descent-note {
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    border-top: 1px solid var(--hairline);
+  }
+
+  .ground {
+    border: 1px solid var(--hairline);
+    border-radius: 2px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-bottom: 20px;
+  }
+  .ground .name { font-weight: 600; color: var(--ink); letter-spacing: 0.04em; text-transform: uppercase; font-size: 11px; margin-right: 10px; }
+
+  .caption {
+    font-family: var(--serif);
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-style: italic;
+    padding: 10px 14px 0;
+  }
+
+  .layout-note { font-size: 12px; color: var(--ink-mute); margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="engagement">
+    <span class="firm">Sharma &amp; Rao Associates</span><span class="sep">·</span>
+    Meridian Textiles Pvt Ltd<span class="sep">·</span>FY 2025-26
+  </div>
+  <nav class="altitude" aria-label="Altitude">
+    <span class="here">Trail</span><span class="sep">·</span><span class="here">Graph</span><span class="sep">·</span>Source
+  </nav>
+</header>
+
+<main>
+  <div class="finding-head">
+    <span class="status exception">EXCEPTION</span>
+    <h1>Same party and amount paid twice within 2 days</h1>
+    <span class="mono mute">duplicate-payment 1.0.0</span>
+    <span class="hash-chip">f7d09a3c</span>
+    <span class="toggle"><span>Rows</span><span class="active">Graph</span></span>
+  </div>
+  <p class="replay-line">Re-running this control reproduces this finding byte for byte. The layout below is deterministic; the same trail always draws the same picture.</p>
+
+  <section class="storey" aria-label="EvidenceTrail storey">
+    <div class="storey-head">
+      <span class="name">Storey 1 · EvidenceTrail</span>
+      <span>the argument, read left to right · edges are directed and typed</span>
+    </div>
+    <svg viewBox="0 0 1100 262" role="img" aria-label="EvidenceTrail DAG for finding f7d09a3c">
+      <defs>
+        <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0.8 L7.2,4 L0,7.2 z" fill="#8C887C"/>
+        </marker>
+      </defs>
+
+      <!-- edges -->
+      <line x1="180" y1="131" x2="228" y2="131" stroke="#8C887C" stroke-width="1" marker-end="url(#arr)"/>
+      <text class="e-label" x="204" y="123" text-anchor="middle">selected</text>
+
+      <path d="M400,131 C428,131 424,61 448,61" fill="none" stroke="#8C887C" stroke-width="1" marker-end="url(#arr)"/>
+      <text class="e-label" x="418" y="88" text-anchor="middle">examined</text>
+      <path d="M400,131 C428,131 424,201 448,201" fill="none" stroke="#8C887C" stroke-width="1" marker-end="url(#arr)"/>
+
+      <path d="M620,61 C648,61 644,131 668,131" fill="none" stroke="#8C887C" stroke-width="1" marker-end="url(#arr)"/>
+      <text class="e-label" x="638" y="85" text-anchor="middle">evidenced-by</text>
+      <path d="M620,201 C648,201 644,131 668,131" fill="none" stroke="#8C887C" stroke-width="1" marker-end="url(#arr)"/>
+
+      <path d="M840,131 C868,131 864,61 888,61" fill="none" stroke="#8C887C" stroke-width="1" marker-end="url(#arr)"/>
+      <text class="e-label" x="858" y="85" text-anchor="middle">reviewed-by</text>
+      <path d="M840,131 C868,131 864,201 888,201" fill="none" stroke="#8C887C" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#arr)"/>
+
+      <!-- CONTROL_RUN -->
+      <g>
+        <rect x="12" y="102" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="12" y="102" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="24" y="118">CONTROL_RUN</text>
+        <text class="n-value" x="24" y="136">duplicate-payment</text>
+        <text class="n-meta" x="24" y="152">1.0.0 · params 9c41b2aa</text>
+      </g>
+
+      <!-- POPULATION -->
+      <g>
+        <rect x="232" y="102" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="232" y="102" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="244" y="118">POPULATION</text>
+        <text class="n-value" x="244" y="136">1,284 payment vouchers</text>
+        <text class="n-meta" x="244" y="152">snapshot 6b09d2c4</text>
+      </g>
+
+      <!-- FACT_REF PV-1123 -->
+      <g>
+        <rect x="452" y="32" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="452" y="32" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="464" y="48">FACT_REF</text>
+        <text class="n-value" x="464" y="66">PV-1123 · 4,85,000.00</text>
+        <text class="n-meta" x="464" y="82">03 Nov 2025 · prov 8f3a2c1d</text>
+      </g>
+
+      <!-- FACT_REF PV-1187 -->
+      <g>
+        <rect x="452" y="172" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="452" y="172" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="464" y="188">FACT_REF</text>
+        <text class="n-value" x="464" y="206">PV-1187 · 4,85,000.00</text>
+        <text class="n-meta" x="464" y="222">05 Nov 2025 · prov 8f3a2c1d</text>
+      </g>
+
+      <!-- FINDING -->
+      <g>
+        <rect x="672" y="102" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="672" y="102" width="3" height="58" fill="#A23B2E"/>
+        <text class="n-kind" x="684" y="118">FINDING · <tspan class="n-kind-exc">EXCEPTION</tspan></text>
+        <text class="n-value" x="684" y="136">Paid twice within 2 days</text>
+        <text class="n-meta" x="684" y="152">f7d09a3c</text>
+      </g>
+
+      <!-- OVERRIDE -->
+      <g>
+        <rect x="892" y="32" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="892" y="32" width="3" height="58" fill="#1C1B18"/>
+        <text class="n-kind" x="904" y="48">OVERRIDE</text>
+        <text class="n-value" x="904" y="66">CA R. Sharma, partner</text>
+        <text class="n-meta" x="904" y="82">05 Jul 2026 · reason recorded</text>
+      </g>
+
+      <!-- SIGN_OFF, pending -->
+      <g class="ghost">
+        <rect x="892" y="172" width="168" height="58" fill="#FBFAF7" stroke="#DAD6CA" stroke-dasharray="3 3"/>
+        <text class="n-kind" x="904" y="188">SIGN_OFF</text>
+        <text class="n-value" x="904" y="206">pending</text>
+        <text class="n-meta" x="904" y="222">blocked by 7 open exceptions</text>
+      </g>
+    </svg>
+    <div class="descent-note">Clicking a FACT_REF descends one storey. Below, the neighborhood of PV-1123.</div>
+  </section>
+
+  <section class="storey" aria-label="TransactionGraph storey">
+    <div class="storey-head">
+      <span class="name">Storey 2 · TransactionGraph</span>
+      <span>the mechanism · neighborhood of PV-1123, two hops · relations, not derivations, so edges are undirected</span>
+    </div>
+    <svg viewBox="0 0 1100 300" role="img" aria-label="TransactionGraph neighborhood of voucher PV-1123">
+      <!-- edges -->
+      <line x1="208" y1="61" x2="320" y2="61" stroke="#8C887C" stroke-width="1"/>
+      <text class="e-label" x="264" y="53" text-anchor="middle">line 1 · cr</text>
+      <line x1="208" y1="251" x2="320" y2="251" stroke="#8C887C" stroke-width="1"/>
+      <text class="e-label" x="264" y="243" text-anchor="middle">line 1 · cr</text>
+
+      <path d="M488,61 C560,61 578,154 646,154" fill="none" stroke="#8C887C" stroke-width="1"/>
+      <text class="e-label" x="560" y="96" text-anchor="middle">payee · 4,85,000.00</text>
+      <path d="M488,251 C560,251 578,182 646,182" fill="none" stroke="#8C887C" stroke-width="1"/>
+      <text class="e-label" x="560" y="230" text-anchor="middle">payee · 4,85,000.00</text>
+
+      <path d="M488,47 C560,47 590,44 646,44" fill="none" stroke="#8C887C" stroke-width="1"/>
+      <text class="e-label" x="566" y="36" text-anchor="middle">logged</text>
+
+      <!-- Account -->
+      <g>
+        <rect x="40" y="32" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="40" y="32" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="52" y="48">ACCOUNT</text>
+        <text class="n-value" x="52" y="66">HDFC Bank OD A/c</text>
+        <text class="n-meta" x="52" y="82">ledger · bank accounts</text>
+      </g>
+      <g>
+        <rect x="40" y="222" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="40" y="222" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="52" y="238">ACCOUNT</text>
+        <text class="n-value" x="52" y="256">HDFC Bank OD A/c</text>
+        <text class="n-meta" x="52" y="272">same ledger, both vouchers</text>
+      </g>
+
+      <!-- Voucher PV-1123, selected -->
+      <g>
+        <rect x="320" y="32" width="168" height="58" fill="#FFFFFF" stroke="#1F4B6E" stroke-width="1.5"/>
+        <rect x="320" y="32" width="3" height="58" fill="#1F4B6E"/>
+        <text class="n-kind" x="332" y="48">VOUCHER · SELECTED</text>
+        <text class="n-value" x="332" y="66">PV-1123 · payment</text>
+        <text class="n-meta" x="332" y="82">03 Nov 2025 · 4,85,000.00</text>
+      </g>
+
+      <!-- Voucher PV-1187 -->
+      <g>
+        <rect x="320" y="222" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="320" y="222" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="332" y="238">VOUCHER</text>
+        <text class="n-value" x="332" y="256">PV-1187 · payment</text>
+        <text class="n-meta" x="332" y="272">05 Nov 2025 · 4,85,000.00</text>
+      </g>
+
+      <!-- EditLogEvent -->
+      <g>
+        <rect x="646" y="15" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="646" y="15" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="658" y="31">EDIT_LOG_EVENT</text>
+        <text class="n-value" x="658" y="49">voucher-created</text>
+        <text class="n-meta" x="658" y="65">03 Nov 2025 22:41 · accounts2</text>
+      </g>
+
+      <!-- Party -->
+      <g>
+        <rect x="646" y="125" width="168" height="58" fill="#FFFFFF" stroke="#DAD6CA"/>
+        <rect x="646" y="125" width="3" height="58" fill="#8C887C"/>
+        <text class="n-kind" x="658" y="141">PARTY</text>
+        <text class="n-value" x="658" y="159">Kanchan Fabrics</text>
+        <text class="n-meta" x="658" y="175">GSTIN 27AABCK4821F1Z5</text>
+      </g>
+
+      <!-- dimmed periphery -->
+      <g class="ghost">
+        <rect x="892" y="125" width="168" height="58" fill="#FBFAF7" stroke="#DAD6CA" stroke-dasharray="3 3"/>
+        <text class="n-kind" x="904" y="141">PERIPHERY</text>
+        <text class="n-value" x="904" y="159">3,102 other vouchers</text>
+        <text class="n-meta" x="904" y="175">dimmed, outside neighborhood</text>
+      </g>
+    </svg>
+    <p class="caption">Two payment vouchers, one payee, equal amounts, two days apart. The finding is visible before it is read.</p>
+    <div class="descent-note">Clicking the selected voucher's provenance descends to ground.</div>
+  </section>
+
+  <div class="ground">
+    <span class="name">Ground · Source</span>
+    daybook-fy26.xml · <span class="mono">TALLYMESSAGE[214]/VOUCHER</span> · artifact <span class="mono">8f3a2c1d</span> ·
+    <a href="#">Open at location</a>
+  </div>
+
+  <p class="layout-note">
+    Layout contract per DESIGN.md 8a: layered, left to right, computed from trail content alone,
+    node order by the engine's total-order tiebreakers. No physics, no randomness, no saved drag state.
+  </p>
+</main>
+
+</body>
+</html>

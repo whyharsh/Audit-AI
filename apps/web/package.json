@@ -1,0 +1,25 @@
+{
+  "name": "@audit-evidence/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build --webpack && bun -e \"await Bun.write('.next/lock', '')\"",
+    "dev": "next dev --webpack",
+    "start": "next start",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@audit-evidence/engine": "workspace:*",
+    "fast-xml-parser": "^5.9.3",
+    "lucide-react": "^0.468.0",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "@types/react": "^19.2.4",
+    "@types/react-dom": "^19.2.3"
+  }
+}
