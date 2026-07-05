@@ -76,6 +76,7 @@ export interface Voucher extends GraphFactBase {
   readonly voucherKind: VoucherKind;
   readonly voucherNumber: string;
   readonly voucherDate: IsoDate;
+  readonly evidenceDate?: IsoDate;
   readonly partyId?: GraphFactId;
   readonly narration?: string;
   readonly totalAmountPaise: MoneyPaise;

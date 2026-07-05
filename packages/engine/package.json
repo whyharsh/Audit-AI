@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "check": "tsc --noEmit -p tsconfig.json",
-    "test": "tsc --noEmit -p tsconfig.json"
+    "check": "bun run typecheck && bun run test",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   }
 }

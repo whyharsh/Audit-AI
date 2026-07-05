@@ -29,12 +29,17 @@ export type IsoTimestamp = Brand<string, "IsoTimestamp">;
 export type TimezoneName = Brand<string, "TimezoneName">;
 export type MoneyPaise = Brand<number, "MoneyPaise">;
 export type CanonicalJson = Brand<string, "CanonicalJson">;
+export type CanonicalJsonInteger = Brand<number, "CanonicalJsonInteger">;
 
 export type HashAlgorithm = "sha256";
 export type SignatureAlgorithm = "ed25519";
 export type TimestampAuthorityProtocol = "rfc3161";
 
-export type CanonicalJsonPrimitive = string | number | boolean | null;
+export type CanonicalJsonPrimitive =
+  | string
+  | CanonicalJsonInteger
+  | boolean
+  | null;
 
 export type CanonicalJsonValue =
   | CanonicalJsonPrimitive

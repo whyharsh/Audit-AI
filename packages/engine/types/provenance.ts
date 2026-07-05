@@ -7,7 +7,8 @@ import type {
   IsoTimestamp,
   ProvenanceRecordId,
   SemverString,
-  SourceLocation
+  SourceLocation,
+  UserId
 } from "./primitives.js";
 
 export type ArtifactDeclaredType =
@@ -31,7 +32,7 @@ export interface ArtifactCustodyRecord extends EngagementRef {
   readonly byteSize: number;
   readonly declaredType: ArtifactDeclaredType;
   readonly detectedType: string;
-  readonly uploadedBy: string;
+  readonly uploadedBy: UserId;
   readonly receivedAt: IsoTimestamp;
   readonly parseStatus: ArtifactParseStatus;
   readonly parseFailureReason?: string;

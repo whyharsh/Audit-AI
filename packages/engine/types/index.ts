@@ -1,4 +1,7 @@
 export * from "./primitives.js";
+export * from "./canonical-json.js";
+export * from "./hash.js";
+export * from "./money.js";
 export * from "./provenance.js";
 export * from "./transaction-graph.js";
 export * from "./controls.js";

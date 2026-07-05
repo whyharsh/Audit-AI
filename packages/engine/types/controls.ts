@@ -109,6 +109,5 @@ export interface Finding extends EngagementRef {
   readonly detail: string;
   readonly severity: FindingSeverity;
   readonly factRefs: readonly GraphFactId[];
-  readonly canonicalHash: ContentHash;
   readonly data: CanonicalJsonValue;
 }

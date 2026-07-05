@@ -2,10 +2,15 @@
   "name": "audit-evidence-ai",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "build": "pnpm --filter @audit-evidence/engine build",
-    "check": "pnpm --filter @audit-evidence/engine check",
-    "test": "pnpm --filter @audit-evidence/engine test"
+    "build": "bun run --filter @audit-evidence/engine build",
+    "check": "bun run --filter @audit-evidence/engine check",
+    "test": "bun run --filter @audit-evidence/engine test",
+    "typecheck": "bun run --filter @audit-evidence/engine typecheck"
   },
   "devDependencies": {
     "typescript": "^5.5.4"
