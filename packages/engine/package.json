@@ -12,6 +12,9 @@
     "build": "tsc -p tsconfig.json",
     "check": "bun run typecheck && bun run test",
     "test": "bun test",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.check.json"
+  },
+  "dependencies": {
+    "@noble/hashes": "^2.2.0"
   }
 }

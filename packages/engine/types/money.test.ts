@@ -3,7 +3,9 @@ import { moneyPaise, parseTallyAmountToPaise } from "./money.js";
 
 describe("moneyPaise", () => {
   test("accepts safe integer paise", () => {
-    expect(moneyPaise(1234)).toBe(1234);
+    const amount: number = moneyPaise(1234);
+
+    expect(amount).toBe(1234);
   });
 
   test("rejects fractions and unsafe integers", () => {
@@ -17,10 +19,14 @@ describe("moneyPaise", () => {
 });
 
 describe("parseTallyAmountToPaise", () => {
-  test("parses decimal strings without parseFloat semantics", () => {
-    expect(parseTallyAmountToPaise("1,234.50")).toBe(123450);
-    expect(parseTallyAmountToPaise("-10.05")).toBe(-1005);
-    expect(parseTallyAmountToPaise("42")).toBe(4200);
+  test("parses decimal strings exactly", () => {
+    const amountWithComma: number = parseTallyAmountToPaise("1,234.50");
+    const negativeAmount: number = parseTallyAmountToPaise("-10.05");
+    const wholeAmount: number = parseTallyAmountToPaise("42");
+
+    expect(amountWithComma).toBe(123450);
+    expect(negativeAmount).toBe(-1005);
+    expect(wholeAmount).toBe(4200);
   });
 
   test("rejects malformed decimal strings", () => {
