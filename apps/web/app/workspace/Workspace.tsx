@@ -5,14 +5,15 @@ import { runV0Controls } from "@audit-evidence/engine";
 import type { CanonicalJsonValue } from "@audit-evidence/engine/types";
 import type { GraphModel, GraphNodeModel } from "./graphs";
 import {
+  buildEvidenceLayerModel,
   buildExplorationModel,
-  buildNeighborhoodModel,
-  buildTrailModel
+  buildTransactionGraphModel,
+  transactionNodeIdForSourceRef
 } from "./graphs";
 import type { CompiledQuestion, QuestionSpec } from "./explore";
 import { compileQuestion, compileQuestionSpec } from "./explore";
 import { GraphSpace } from "./GraphSpace";
-import type { OverrideRecord, WorkspaceData } from "./types";
+import type { OverrideRecord, SourceSnippet, WorkspaceData } from "./types";
 import { CONTROL_META, RULE_PACK_META } from "./types";
 import {
   formatDate,
@@ -21,7 +22,7 @@ import {
   shortHash
 } from "./format";
 
-type Layer = "trail" | "graph" | "source";
+type Layer = "evidence" | "transactions" | "documents";
 
 interface Selection {
   readonly type: "finding" | "exploration";
@@ -37,6 +38,14 @@ type ModelAskResponse =
       readonly model: string;
     }
   | { readonly ok: false; readonly message: string };
+
+interface UploadedDocument {
+  readonly id: string;
+  readonly name: string;
+  readonly size: number;
+  readonly type: string;
+  readonly linkedSourceRef?: string;
+}
 
 const SESSION_ACTOR = "CA R. Sharma, partner";
 
@@ -68,9 +77,10 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
       : { type: "finding" };
   });
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [layer, setLayer] = useState<Layer>("trail");
+  const [layer, setLayer] = useState<Layer>("evidence");
   const [focusRef, setFocusRef] = useState<string | null>(null);
   const [sourceRef, setSourceRef] = useState<string | null>(null);
+  const [uploadedDocuments, setUploadedDocuments] = useState<readonly UploadedDocument[]>([]);
   const [collapsed, setCollapsed] = useState(false);
   const [overrides, setOverrides] = useState<Record<string, OverrideRecord>>({});
   const [reason, setReason] = useState("");
@@ -92,7 +102,7 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
   const activeRuleMeta =
     CONTROL_META.find((meta) => meta.id === activeControlId) ?? null;
 
-  const trailModel: GraphModel | null = useMemo(() => {
+  const explorationEvidenceModel: GraphModel | null = useMemo(() => {
     if (selection.type === "exploration" && exploration) {
       return buildExplorationModel(
         {
@@ -104,30 +114,31 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
         dataset
       );
     }
-    if (selectedFinding) {
-      return buildTrailModel(
-        selectedFinding,
-        dataset,
-        overrides[selectedFinding.id]
-      );
-    }
     return null;
-  }, [selection, exploration, selectedFinding, dataset, overrides]);
+  }, [selection, exploration, dataset]);
 
-  const neighborhoodModel: GraphModel | null = useMemo(() => {
-    if (!focusRef) {
-      return null;
-    }
-    const siblings =
-      selection.type === "exploration" && exploration
-        ? exploration.matches.map((v) => v.id)
-        : selectedFinding
-          ? selectedFinding.sourceRefs
-          : [];
-    return buildNeighborhoodModel(focusRef, dataset, siblings);
-  }, [focusRef, dataset, selection, exploration, selectedFinding]);
+  const ruleEvidenceModel: GraphModel | null = useMemo(
+    () =>
+      buildEvidenceLayerModel({
+        rule: activeRuleMeta,
+        findings: findingsByControl.get(activeControlId) ?? [],
+        dataset,
+        overrides
+      }),
+    [activeRuleMeta, findingsByControl, activeControlId, dataset, overrides]
+  );
 
-  const activeModel = layer === "trail" ? trailModel : neighborhoodModel;
+  const transactionModel: GraphModel = useMemo(
+    () => buildTransactionGraphModel(dataset),
+    [dataset]
+  );
+
+  const activeModel =
+    layer === "evidence"
+      ? explorationEvidenceModel ?? ruleEvidenceModel
+      : layer === "transactions"
+        ? transactionModel
+        : null;
   const snippet = sourceRef ? data.snippets[sourceRef] : undefined;
 
   const selectedNode: GraphNodeModel | null =
@@ -148,8 +159,8 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
   function selectFinding(findingId: string, controlId: string) {
     setActiveControlId(controlId);
     setSelection({ type: "finding", findingId });
-    setSelectedNodeId("t:finding");
-    setLayer("trail");
+    setSelectedNodeId(`ev:finding:${findingId}`);
+    setLayer("evidence");
     setFocusRef(null);
     setSourceRef(null);
     setReplayNote(null);
@@ -159,25 +170,44 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
 
   function descend(node: GraphNodeModel) {
     setSelectedNodeId(node.id);
-    if (layer === "trail" && node.sourceRef) {
+    if (layer === "evidence" && node.sourceRef) {
       setFocusRef(node.sourceRef);
-      setSelectedNodeId(`n:${node.sourceRef}`);
-      setLayer("graph");
+      setSelectedNodeId(transactionNodeIdForSourceRef(node.sourceRef, dataset));
+      setLayer("transactions");
       return;
     }
-    if (layer === "graph" && node.sourceRef && data.snippets[node.sourceRef]) {
+    if (layer === "evidence") {
+      setLayer("transactions");
+      return;
+    }
+    if (layer === "transactions" && node.sourceRef) {
       setSourceRef(node.sourceRef);
-      setLayer("source");
+      setLayer("documents");
     }
   }
 
   function ascend() {
-    if (layer === "source") {
-      setLayer(focusRef ? "graph" : "trail");
+    if (layer === "documents") {
+      setLayer("transactions");
       return;
     }
-    if (layer === "graph") {
-      setLayer("trail");
+    if (layer === "transactions") {
+      setLayer("evidence");
+    }
+  }
+
+  function selectCanvasNode(node: GraphNodeModel) {
+    setSelectedNodeId(node.id);
+    if (layer === "evidence" && node.sourceRef) {
+      setFocusRef(node.sourceRef);
+      setSelectedNodeId(transactionNodeIdForSourceRef(node.sourceRef, dataset));
+      setLayer("transactions");
+      return;
+    }
+    if (layer === "transactions" && node.sourceRef) {
+      setFocusRef(node.sourceRef);
+      setSourceRef(node.sourceRef);
+      setLayer("documents");
     }
   }
 
@@ -272,9 +302,23 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
     setExploration({ compiled, matches });
     setSelection({ type: "exploration" });
     setSelectedNodeId("x:result");
-    setLayer("trail");
+    setLayer("evidence");
     setFocusRef(null);
     setSourceRef(null);
+  }
+
+  function registerUploads(files: FileList | null) {
+    if (!files || files.length === 0) {
+      return;
+    }
+    const next = Array.from(files).map((file, index) => ({
+      id: `${file.name}:${file.size}:${file.lastModified}:${index}`,
+      name: file.name,
+      size: file.size,
+      type: file.type || "unknown",
+      ...(sourceRef ? { linkedSourceRef: sourceRef } : {})
+    }));
+    setUploadedDocuments((prev) => [...prev, ...next]);
   }
 
   const overrideValid = reason.trim().length >= 40 && materiality.trim().length >= 20;
@@ -378,6 +422,10 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
                   } else {
                     setActiveControlId(meta.id);
                     setSelection({ type: "finding" });
+                    setSelectedNodeId(`ev:rule:${meta.id}`);
+                    setLayer("evidence");
+                    setFocusRef(null);
+                    setSourceRef(null);
                   }
                 }}
               >
@@ -573,34 +621,32 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
               <div className="altitude">
                 <button
                   type="button"
-                  className={layer === "trail" ? "here" : ""}
-                  onClick={() => setLayer("trail")}
+                  className={layer === "evidence" ? "here" : ""}
+                  onClick={() => setLayer("evidence")}
                 >
-                  Trail
+                  Evidence
                 </button>
                 <span>·</span>
                 <button
                   type="button"
-                  className={layer === "graph" ? "here" : ""}
-                  disabled={!focusRef}
-                  onClick={() => setLayer("graph")}
+                  className={layer === "transactions" ? "here" : ""}
+                  onClick={() => setLayer("transactions")}
                 >
-                  Graph
+                  Transaction graph
                 </button>
                 <span>·</span>
                 <button
                   type="button"
-                  className={layer === "source" ? "here" : ""}
-                  disabled={!sourceRef}
-                  onClick={() => setLayer("source")}
+                  className={layer === "documents" ? "here" : ""}
+                  onClick={() => setLayer("documents")}
                 >
-                  Source
+                  Document intelligence
                 </button>
               </div>
               <button
                 className="btn quiet"
                 type="button"
-                disabled={layer === "trail"}
+                disabled={layer === "evidence"}
                 onClick={ascend}
               >
                 Ascend
@@ -608,10 +654,12 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
               <button
                 className="btn quiet"
                 type="button"
-                disabled={!selectedNode?.sourceRef || layer === "source"}
+                disabled={layer === "documents" || (layer === "transactions" && !selectedNode?.sourceRef)}
                 onClick={() => {
                   if (selectedNode) {
                     descend(selectedNode);
+                  } else if (layer === "evidence") {
+                    setLayer("transactions");
                   }
                 }}
               >
@@ -619,44 +667,146 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
               </button>
               <span className="gp-spacer" />
               <span className="gp-hint">
-                click selects · double click descends · drag pans · scroll zooms
+                click descends when the node has evidence · drag pans · scroll zooms
               </span>
               <button className="btn quiet" type="button" onClick={() => setCollapsed(true)}>
                 Collapse
               </button>
             </div>
 
-            {layer === "source" ? (
-              <div className="source-view">
-                {snippet ? (
-                  <>
-                    <p className="source-head">
-                      <span className="name">{snippet.artifactName}</span>{" "}
-                      · line {snippet.lineNumber} · fixture artifact in custody
-                    </p>
-                    <pre>{snippet.snippet}</pre>
-                  </>
-                ) : (
-                  <p className="source-head">
-                    No source snippet is available for this reference.
-                  </p>
-                )}
-              </div>
+            {layer === "documents" ? (
+              <DocumentIntelligence
+                data={data}
+                sourceRef={sourceRef}
+                snippet={snippet}
+                uploads={uploadedDocuments}
+                onUpload={registerUploads}
+              />
             ) : (
               <GraphSpace
                 model={activeModel}
                 selectedId={selectedNodeId}
                 emptyMessage={
-                  layer === "trail"
-                    ? "Choose a rule or a finding to draw its EvidenceTrail."
-                    : "Select a FACT_REF in the trail and descend to see its neighborhood."
+                  layer === "evidence"
+                    ? "Choose a rule or a finding to draw the evidence layer."
+                    : "The transaction graph has no nodes to show."
                 }
-                onSelect={(node) => setSelectedNodeId(node.id)}
+                onSelect={selectCanvasNode}
                 onDescend={descend}
               />
             )}
           </section>
         )}
+      </div>
+    </div>
+  );
+}
+
+function DocumentIntelligence({
+  data,
+  sourceRef,
+  snippet,
+  uploads,
+  onUpload
+}: {
+  readonly data: WorkspaceData;
+  readonly sourceRef: string | null;
+  readonly snippet: SourceSnippet | undefined;
+  readonly uploads: readonly UploadedDocument[];
+  readonly onUpload: (files: FileList | null) => void;
+}) {
+  const title = sourceRef ? sourceTitle(data, sourceRef) : null;
+  const related = sourceRef ? relatedDocuments(data, sourceRef) : [];
+  const linkedUploads = uploads.filter((upload) =>
+    sourceRef ? upload.linkedSourceRef === sourceRef : upload.linkedSourceRef === undefined
+  );
+
+  return (
+    <div className="source-view doc-intel">
+      <div className="doc-head">
+        <div>
+          <p className="source-head">
+            <span className="name">Document intelligence</span>
+            {title ? ` / ${title}` : " / no node selected"}
+          </p>
+          <p className="doc-note">
+            Evidence opened from the transaction canvas stays linked to the node
+            that produced it.
+          </p>
+        </div>
+        <label className="btn" htmlFor="doc-upload">
+          Upload document
+        </label>
+        <input
+          id="doc-upload"
+          className="file-input"
+          type="file"
+          multiple
+          onChange={(event) => {
+            onUpload(event.currentTarget.files);
+            event.currentTarget.value = "";
+          }}
+        />
+      </div>
+
+      <div className="doc-grid">
+        <section className="doc-panel">
+          <h3>Source Preview</h3>
+          {snippet ? (
+            <>
+              <p className="source-head">
+                <span className="name">{snippet.artifactName}</span>{" "}
+                / line {snippet.lineNumber} / fixture artifact in custody
+              </p>
+              <pre>{snippet.snippet}</pre>
+            </>
+          ) : (
+            <p className="source-head">
+              Select a voucher or document node to open its source evidence.
+            </p>
+          )}
+        </section>
+
+        <section className="doc-panel">
+          <h3>Linked Documents</h3>
+          {related.length > 0 ? (
+            related.map((doc) => (
+              <div className="doc-row" key={doc.id}>
+                <div>
+                  <strong>{doc.documentNumber}</strong>
+                  <span>{doc.documentType}</span>
+                </div>
+                <div className="mono">
+                  {formatDate(doc.documentDate)} / {formatInrPaise(doc.amountPaise)}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="source-head">
+              No linked source document is present for this node yet.
+            </p>
+          )}
+        </section>
+
+        <section className="doc-panel">
+          <h3>Uploaded Documents</h3>
+          {linkedUploads.length > 0 ? (
+            linkedUploads.map((upload) => (
+              <div className="doc-row" key={upload.id}>
+                <div>
+                  <strong>{upload.name}</strong>
+                  <span>{upload.type}</span>
+                </div>
+                <div className="mono">{formatBytes(upload.size)}</div>
+              </div>
+            ))
+          ) : (
+            <p className="source-head">
+              No uploaded document is linked to this node in this browser
+              session.
+            </p>
+          )}
+        </section>
       </div>
     </div>
   );
@@ -696,4 +846,54 @@ function isCanonicalRecord(
   value: CanonicalJsonValue
 ): value is { readonly [key: string]: CanonicalJsonValue } {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function sourceTitle(data: WorkspaceData, ref: string): string {
+  const voucher = data.dataset.vouchers.find((candidate) => candidate.id === ref);
+  if (voucher) {
+    return `${voucher.voucherNumber} / ${voucher.voucherKind}`;
+  }
+  const doc = data.dataset.sourceDocuments.find((candidate) => candidate.id === ref);
+  if (doc) {
+    return `${doc.documentNumber} / ${doc.documentType}`;
+  }
+  const event = data.dataset.editLogEvents.find((candidate) => candidate.id === ref);
+  if (event) {
+    return `${event.eventKind} / ${formatDate(event.occurredAt.slice(0, 10))}`;
+  }
+  return ref;
+}
+
+function relatedDocuments(data: WorkspaceData, ref: string) {
+  const direct = data.dataset.sourceDocuments.find((doc) => doc.id === ref);
+  if (direct) {
+    return [direct];
+  }
+
+  const voucher = data.dataset.vouchers.find((candidate) => candidate.id === ref);
+  if (voucher) {
+    return data.dataset.sourceDocuments.filter(
+      (doc) =>
+        doc.id === voucher.documentRef ||
+        doc.voucherGuids.includes(voucher.id)
+    );
+  }
+
+  const event = data.dataset.editLogEvents.find((candidate) => candidate.id === ref);
+  if (event?.voucherGuid) {
+    return relatedDocuments(data, event.voucherGuid);
+  }
+
+  return [];
+}
+
+function formatBytes(size: number): string {
+  if (size < 1024) {
+    return `${size} B`;
+  }
+  const kib = Math.round(size / 1024);
+  if (kib < 1024) {
+    return `${kib} KB`;
+  }
+  return `${Math.round(kib / 1024)} MB`;
 }

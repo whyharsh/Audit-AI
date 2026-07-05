@@ -5,7 +5,7 @@ import type {
   SyntheticVoucher,
   V0ControlFinding
 } from "@audit-evidence/engine";
-import type { OverrideRecord } from "./types";
+import type { ControlMeta, OverrideRecord } from "./types";
 import { CONTROL_META, populationCount } from "./types";
 import {
   formatDate,
@@ -49,6 +49,29 @@ export interface GraphModel {
   readonly edges: GraphEdgeModel[];
   readonly width: number;
   readonly height: number;
+}
+
+export interface EvidenceLayerInput {
+  readonly rule: ControlMeta | null;
+  readonly findings: readonly V0ControlFinding[];
+  readonly dataset: SyntheticDataset;
+  readonly overrides: Readonly<Record<string, OverrideRecord>>;
+}
+
+export function transactionNodeIdForSourceRef(
+  ref: string,
+  dataset: SyntheticDataset
+): string {
+  if (dataset.vouchers.some((voucher) => voucher.id === ref)) {
+    return `g:v:${ref}`;
+  }
+  if (dataset.sourceDocuments.some((doc) => doc.id === ref)) {
+    return `g:d:${ref}`;
+  }
+  if (dataset.editLogEvents.some((event) => event.id === ref)) {
+    return `g:e:${ref}`;
+  }
+  return `g:unknown:${ref}`;
 }
 
 function truncate(value: string, max: number): string {
@@ -244,6 +267,289 @@ export function buildTrailModel(
   });
 
   return layout(nodes, edges);
+}
+
+export function buildEvidenceLayerModel(
+  input: EvidenceLayerInput
+): GraphModel | null {
+  const { rule, findings, dataset, overrides } = input;
+  if (!rule) {
+    return null;
+  }
+
+  const nodes: Omit<GraphNodeModel, "x" | "y">[] = [];
+  const edges: GraphEdgeModel[] = [];
+  const ruleId = `ev:rule:${rule.id}`;
+  const popId = `ev:population:${rule.id}`;
+
+  nodes.push({
+    id: ruleId,
+    rank: 0,
+    kindLine: "RULE",
+    value: truncate(rule.title, 26),
+    meta: `${rule.assertion} / ${rule.implementationStatus}`,
+    tone: rule.implementationStatus === "implemented" ? "structure" : "ghost",
+    dashed: rule.implementationStatus === "specified"
+  });
+  nodes.push({
+    id: popId,
+    rank: 1,
+    kindLine: "POPULATION",
+    value: `${populationCount(rule.id, dataset)} ${rule.populationLabel}`,
+    meta: "full population, no sampling",
+    tone: "structure"
+  });
+  edges.push({ from: ruleId, to: popId, label: "selects", directed: true });
+
+  if (rule.implementationStatus === "specified") {
+    const missingId = `ev:specified:${rule.id}`;
+    nodes.push({
+      id: missingId,
+      rank: 2,
+      kindLine: "EXECUTOR",
+      value: "not built yet",
+      meta: "source connector or control runtime missing",
+      tone: "ghost",
+      dashed: true
+    });
+    edges.push({ from: popId, to: missingId, label: "blocked", directed: true });
+    return layout(nodes, edges);
+  }
+
+  if (findings.length === 0) {
+    const passId = `ev:pass:${rule.id}`;
+    nodes.push({
+      id: passId,
+      rank: 2,
+      kindLine: "PASS_SUMMARY",
+      value: "no exceptions",
+      meta: "population tested",
+      tone: "structure"
+    });
+    edges.push({ from: popId, to: passId, label: "tested", directed: true });
+    return layout(nodes, edges);
+  }
+
+  const visibleFindings = findings.slice(0, 5);
+  const hiddenFindings = findings.length - visibleFindings.length;
+  const shownFactRefs = new Set<string>();
+  const shownDocRefs = new Set<string>();
+
+  visibleFindings.forEach((finding, findingIndex) => {
+    const findingId = `ev:finding:${finding.id}`;
+    nodes.push({
+      id: findingId,
+      rank: 2,
+      kindLine: "FINDING",
+      statusSuffix: finding.status,
+      value: truncate(finding.title, 26),
+      meta: `${shortHash(finding.id)}${overrides[finding.id] ? " / overridden" : ""}`,
+      tone: overrides[finding.id] ? "override" : "exception"
+    });
+    edges.push({
+      from: popId,
+      to: findingId,
+      directed: true,
+      ...(findingIndex === 0 ? { label: "raises" } : {})
+    });
+
+    for (const ref of finding.sourceRefs.slice(0, 4)) {
+      if (shownFactRefs.has(ref)) {
+        edges.push({
+          from: findingId,
+          to: evidenceFactNodeId(ref),
+          directed: true
+        });
+        continue;
+      }
+      shownFactRefs.add(ref);
+      const resolved = resolveRef(ref, dataset);
+      nodes.push({
+        id: evidenceFactNodeId(ref),
+        rank: 3,
+        kindLine: resolved ? resolved.kind.toUpperCase() : "FACT_REF",
+        value: resolved ? truncate(resolved.value, 26) : truncate(ref, 26),
+        meta: resolved ? resolved.meta : "unresolved reference",
+        tone: resolved?.kind === "document" ? "focus" : "structure",
+        sourceRef: ref
+      });
+      edges.push({
+        from: findingId,
+        to: evidenceFactNodeId(ref),
+        label: "evidenced-by",
+        directed: true
+      });
+
+      const doc = documentForRef(ref, dataset);
+      if (doc && !shownDocRefs.has(doc.id)) {
+        shownDocRefs.add(doc.id);
+        nodes.push(documentNode(doc, "focus", 4, `ev:doc:${doc.id}`));
+        edges.push({
+          from: evidenceFactNodeId(ref),
+          to: `ev:doc:${doc.id}`,
+          label: "source",
+          directed: true
+        });
+      }
+    }
+  });
+
+  if (hiddenFindings > 0) {
+    const bundleId = `ev:finding-bundle:${rule.id}`;
+    nodes.push({
+      id: bundleId,
+      rank: 2,
+      kindLine: "FINDING",
+      value: `${hiddenFindings} more findings`,
+      meta: "bundled in evidence layer",
+      tone: "ghost",
+      dashed: true
+    });
+    edges.push({ from: popId, to: bundleId, directed: true });
+  }
+
+  return layout(nodes, edges);
+}
+
+export function buildTransactionGraphModel(
+  dataset: SyntheticDataset
+): GraphModel {
+  const nodes: Omit<GraphNodeModel, "x" | "y">[] = [];
+  const edges: GraphEdgeModel[] = [];
+  const accountIds = new Set<string>();
+  const partyIds = new Set<string>();
+  const documentIds = new Set<string>();
+
+  for (const voucher of dataset.vouchers) {
+    nodes.push({
+      id: `g:v:${voucher.id}`,
+      rank: 1,
+      kindLine: "VOUCHER",
+      value: `${voucher.voucherNumber} / ${voucher.voucherKind}`,
+      meta: `${formatDate(voucher.voucherDate)} / ${formatInrPaise(voucher.totalAmountPaise)}`,
+      tone: "structure",
+      sourceRef: voucher.id
+    });
+
+    for (const line of voucher.lines) {
+      accountIds.add(line.accountGuid);
+      const amount = line.debitPaise > 0 ? line.debitPaise : line.creditPaise;
+      const side = line.debitPaise > 0 ? "dr" : "cr";
+      edges.push({
+        from: `g:a:${line.accountGuid}`,
+        to: `g:v:${voucher.id}`,
+        label: `${side} ${formatInrPaise(amount)}`,
+        directed: true
+      });
+    }
+
+    if (voucher.partyGuid) {
+      const party = dataset.parties.find(
+        (candidate) =>
+          candidate.id === voucher.partyGuid ||
+          candidate.ledgerGuid === voucher.partyGuid
+      );
+      if (party) {
+        partyIds.add(party.id);
+        edges.push({
+          from: `g:v:${voucher.id}`,
+          to: `g:p:${party.id}`,
+          label: "party",
+          directed: true
+        });
+      }
+    }
+
+    if (voucher.documentRef) {
+      const doc = dataset.sourceDocuments.find((candidate) => candidate.id === voucher.documentRef);
+      if (doc) {
+        documentIds.add(doc.id);
+        edges.push({
+          from: `g:v:${voucher.id}`,
+          to: `g:d:${doc.id}`,
+          label: "document",
+          directed: true
+        });
+      }
+    }
+  }
+
+  for (const ledgerId of accountIds) {
+    const ledger = dataset.ledgers.find((candidate) => candidate.id === ledgerId);
+    nodes.push({
+      id: `g:a:${ledgerId}`,
+      rank: 0,
+      kindLine: "ACCOUNT",
+      value: truncate(ledger?.name ?? ledgerId, 26),
+      meta: `ledger / ${ledger?.kind ?? "unknown"}`,
+      tone: "structure"
+    });
+  }
+
+  for (const partyId of partyIds) {
+    const party = dataset.parties.find((candidate) => candidate.id === partyId);
+    if (!party) {
+      continue;
+    }
+    nodes.push({
+      id: `g:p:${party.id}`,
+      rank: 2,
+      kindLine: "PARTY",
+      value: truncate(party.name, 26),
+      meta: party.gstin ? `GSTIN ${party.gstin}` : "no GSTIN on record",
+      tone: "structure"
+    });
+  }
+
+  for (const documentId of documentIds) {
+    const doc = dataset.sourceDocuments.find((candidate) => candidate.id === documentId);
+    if (!doc) {
+      continue;
+    }
+    nodes.push(documentNode(doc, "focus", 3, `g:d:${doc.id}`));
+  }
+
+  return layout(nodes, edges);
+}
+
+function evidenceFactNodeId(ref: string): string {
+  return `ev:fact:${ref}`;
+}
+
+function documentForRef(
+  ref: string,
+  dataset: SyntheticDataset
+): SyntheticSourceDocument | undefined {
+  const direct = dataset.sourceDocuments.find((doc) => doc.id === ref);
+  if (direct) {
+    return direct;
+  }
+  const voucher = dataset.vouchers.find((candidate) => candidate.id === ref);
+  if (!voucher) {
+    return undefined;
+  }
+  return dataset.sourceDocuments.find(
+    (doc) =>
+      doc.id === voucher.documentRef ||
+      doc.voucherGuids.includes(voucher.id)
+  );
+}
+
+function documentNode(
+  doc: SyntheticSourceDocument,
+  tone: NodeTone,
+  rank: number,
+  id: string
+): Omit<GraphNodeModel, "x" | "y"> {
+  return {
+    id,
+    rank,
+    kindLine: "DOCUMENT",
+    value: truncate(doc.documentNumber, 26),
+    meta: `${doc.documentType} / ${formatDate(doc.documentDate)}`,
+    tone,
+    sourceRef: doc.id
+  };
 }
 
 export function buildNeighborhoodModel(
