@@ -1,0 +1,29 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Sensitive audit material
+data/
+client-data/
+uploads/
+evidence-private/
+
