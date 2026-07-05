@@ -7,11 +7,11 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "bun run --filter @audit-evidence/engine build",
-    "check": "bun run --filter @audit-evidence/engine check",
+    "build": "bun run --filter @audit-evidence/engine build && bun run --filter @audit-evidence/rules build",
+    "check": "bun run --filter @audit-evidence/engine check && bun run --filter @audit-evidence/rules check && bun run --filter @audit-evidence/web typecheck",
     "dev": "bun run --filter @audit-evidence/web dev",
-    "test": "bun run --filter @audit-evidence/engine test",
-    "typecheck": "bun run --filter @audit-evidence/engine typecheck"
+    "test": "bun run --filter @audit-evidence/engine test && bun run --filter @audit-evidence/rules test",
+    "typecheck": "bun run --filter @audit-evidence/engine typecheck && bun run --filter @audit-evidence/rules typecheck && bun run --filter @audit-evidence/web typecheck"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",

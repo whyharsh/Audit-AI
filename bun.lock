@@ -14,6 +14,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@audit-evidence/engine": "workspace:*",
+        "@audit-evidence/rules": "workspace:*",
         "fast-xml-parser": "^5.9.3",
         "lucide-react": "^0.468.0",
         "next": "^16.1.6",
@@ -34,9 +35,18 @@
         "fast-xml-parser": "^5.9.3",
       },
     },
+    "packages/rules": {
+      "name": "@audit-evidence/rules",
+      "version": "0.0.0",
+      "dependencies": {
+        "@audit-evidence/engine": "workspace:*",
+      },
+    },
   },
   "packages": {
     "@audit-evidence/engine": ["@audit-evidence/engine@workspace:packages/engine"],
+
+    "@audit-evidence/rules": ["@audit-evidence/rules@workspace:packages/rules"],
 
     "@audit-evidence/web": ["@audit-evidence/web@workspace:apps/web"],
 

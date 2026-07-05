@@ -4,6 +4,14 @@ import type {
   SyntheticSourceRefIndexEntry,
   V0ControlFinding
 } from "@audit-evidence/engine";
+import {
+  INDIA_FINANCIAL_AUDIT_MVP_RULE_PACK,
+  INDIA_FINANCIAL_AUDIT_MVP_RULES
+} from "@audit-evidence/rules";
+import type {
+  AuditRuleDefinition,
+  RuleImplementationStatus
+} from "@audit-evidence/rules";
 
 export interface SourceSnippet {
   readonly artifactName: string;
@@ -30,43 +38,32 @@ export interface OverrideRecord {
 
 export interface ControlMeta {
   readonly id: string;
+  readonly ruleId: string;
   readonly title: string;
   readonly assertion: string;
   readonly populationLabel: string;
+  readonly domain: string;
+  readonly implementationStatus: RuleImplementationStatus;
+  readonly applicability: string;
+  readonly controlIntent: string;
+  readonly citations: AuditRuleDefinition["citations"];
 }
 
-export const CONTROL_META: readonly ControlMeta[] = [
-  {
-    id: "editlog-disabled-period",
-    title: "Edit log disabled period",
-    assertion: "integrity",
-    populationLabel: "edit log events and vouchers"
-  },
-  {
-    id: "editlog-gap",
-    title: "Edit log silence gaps",
-    assertion: "integrity",
-    populationLabel: "edit log events and vouchers"
-  },
-  {
-    id: "duplicate-payment",
-    title: "Duplicate payments",
-    assertion: "existence",
-    populationLabel: "payment vouchers"
-  },
-  {
-    id: "cutoff-yearend",
-    title: "Year-end cutoff",
-    assertion: "cutoff",
-    populationLabel: "vouchers with linked documents"
-  },
-  {
-    id: "manual-journal-risk",
-    title: "Manual journal risk",
-    assertion: "authorization",
-    populationLabel: "journal vouchers"
-  }
-];
+export const RULE_PACK_META = INDIA_FINANCIAL_AUDIT_MVP_RULE_PACK;
+
+export const CONTROL_META: readonly ControlMeta[] =
+  INDIA_FINANCIAL_AUDIT_MVP_RULES.map((rule) => ({
+    id: rule.engineControlId ?? rule.id,
+    ruleId: rule.id,
+    title: rule.title,
+    assertion: rule.assertion,
+    populationLabel: populationLabelForRule(rule),
+    domain: rule.domain,
+    implementationStatus: rule.implementationStatus,
+    applicability: rule.applicability,
+    controlIntent: rule.controlIntent,
+    citations: rule.citations
+  }));
 
 export function populationCount(
   controlId: string,
@@ -84,5 +81,20 @@ export function populationCount(
       return dataset.vouchers.filter((v) => v.voucherKind === "journal").length;
     default:
       return dataset.vouchers.length;
+  }
+}
+
+function populationLabelForRule(rule: AuditRuleDefinition): string {
+  switch (rule.populationQuery.entity) {
+    case "editLogEvents":
+      return "edit log events and vouchers";
+    case "vouchers":
+      return "voucher population";
+    case "ledgerBalances":
+      return "ledger balances";
+    case "bankReconciliationItems":
+      return "bank reconciliation items";
+    default:
+      return rule.populationQuery.entity;
   }
 }

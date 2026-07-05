@@ -13,7 +13,7 @@ import type { CompiledQuestion, QuestionSpec } from "./explore";
 import { compileQuestion, compileQuestionSpec } from "./explore";
 import { GraphSpace } from "./GraphSpace";
 import type { OverrideRecord, WorkspaceData } from "./types";
-import { CONTROL_META } from "./types";
+import { CONTROL_META, RULE_PACK_META } from "./types";
 import {
   formatDate,
   formatInrPaise,
@@ -89,6 +89,8 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
     selection.type === "finding" && selection.findingId
       ? findings.find((f) => f.id === selection.findingId) ?? null
       : null;
+  const activeRuleMeta =
+    CONTROL_META.find((meta) => meta.id === activeControlId) ?? null;
 
   const trailModel: GraphModel | null = useMemo(() => {
     if (selection.type === "exploration" && exploration) {
@@ -357,6 +359,11 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
           ) : null}
 
           <h2>Rules</h2>
+          <p className="rail-meta">
+            India financial audit pack: {RULE_PACK_META.counts.total} rules,{" "}
+            {RULE_PACK_META.counts.implemented} executable,{" "}
+            {RULE_PACK_META.counts.specified} specified.
+          </p>
           {CONTROL_META.map((meta) => {
             const list = findingsByControl.get(meta.id) ?? [];
             return (
@@ -376,21 +383,49 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
               >
                 <span className="rule-title">{meta.title}</span>
                 <span className="rule-meta">
-                  <span className="mono">{meta.id} · v0 · {meta.assertion}</span>
+                  <span className="mono">
+                    {meta.implementationStatus === "implemented"
+                      ? meta.id
+                      : "specified"}{" "}
+                    · v0 · {meta.assertion}
+                  </span>
                   <span className={`rule-count${list.length === 0 ? " zero" : ""}`}>
-                    {list.length === 0
-                      ? "no exceptions"
-                      : `${list.length} exception${list.length > 1 ? "s" : ""}`}
+                    {meta.implementationStatus === "specified"
+                      ? "specified"
+                      : list.length === 0
+                        ? "no exceptions"
+                        : `${list.length} exception${list.length > 1 ? "s" : ""}`}
                   </span>
                 </span>
               </button>
             );
           })}
 
+          {activeRuleMeta ? (
+            <div className="detail-block">
+              <dl>
+                <dt>Rule source</dt>
+                <dd>{activeRuleMeta.domain}</dd>
+                <dt>Status</dt>
+                <dd>{activeRuleMeta.implementationStatus}</dd>
+                <dt>Intent</dt>
+                <dd>{activeRuleMeta.controlIntent}</dd>
+                <dt>Citations</dt>
+                <dd>
+                  {activeRuleMeta.citations
+                    .map((citation) => citation.authority)
+                    .join(", ")}
+                </dd>
+              </dl>
+            </div>
+          ) : null}
+
           <h2>Findings · {activeControlId}</h2>
           {(findingsByControl.get(activeControlId) ?? []).length === 0 ? (
             <p className="rail-meta">
-              Population tested, nothing to report.
+              {activeRuleMeta?.implementationStatus === "specified"
+                ? "Specified for the financial audit rule pack. The source connector or deterministic executor is not built yet."
+                : "Population tested, nothing to report."}
             </p>
           ) : null}
           {(findingsByControl.get(activeControlId) ?? []).map((finding) => {

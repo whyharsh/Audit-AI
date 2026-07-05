@@ -1,0 +1,19 @@
+{
+  "name": "@audit-evidence/rules",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "bun run typecheck && bun run test",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.check.json"
+  },
+  "dependencies": {
+    "@audit-evidence/engine": "workspace:*"
+  }
+}
