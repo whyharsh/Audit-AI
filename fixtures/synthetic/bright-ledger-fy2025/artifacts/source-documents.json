@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "synthetic-source-documents/v0.1",
+  "documents": [
+    {
+      "documentId": "doc-kav-24-041",
+      "documentType": "supplier-bill",
+      "documentNumber": "KAV/24/041",
+      "documentDate": "2024-04-05",
+      "partyGuid": "party-kaveri-metals",
+      "voucherGuids": [
+        "voucher-pur-2001",
+        "voucher-pmt-1001"
+      ],
+      "amountPaise": 8360000,
+      "artifactName": "KAV-24-041.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          84,
+          116,
+          520,
+          704
+        ]
+      }
+    },
+    {
+      "documentId": "doc-ori-24-071",
+      "documentType": "sales-invoice",
+      "documentNumber": "ORI/24/071",
+      "documentDate": "2024-04-07",
+      "partyGuid": "party-orion-retailers",
+      "voucherGuids": [
+        "voucher-sal-3001",
+        "voucher-rct-4001"
+      ],
+      "amountPaise": 12508000,
+      "artifactName": "ORI-24-071.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          72,
+          110,
+          526,
+          700
+        ]
+      }
+    },
+    {
+      "documentId": "doc-apx-24-117",
+      "documentType": "supplier-bill",
+      "documentNumber": "APX/24/117",
+      "documentDate": "2024-07-15",
+      "partyGuid": "party-apex-traders",
+      "voucherGuids": [
+        "voucher-pur-2007",
+        "voucher-pmt-1007",
+        "voucher-pmt-1008"
+      ],
+      "amountPaise": 1180000,
+      "artifactName": "APX-24-117.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          88,
+          120,
+          530,
+          712
+        ]
+      }
+    },
+    {
+      "documentId": "doc-apx-24-209",
+      "documentType": "supplier-bill",
+      "documentNumber": "APX/24/209",
+      "documentDate": "2024-09-12",
+      "partyGuid": "party-apex-traders",
+      "voucherGuids": [
+        "voucher-pur-2025",
+        "voucher-pmt-1025"
+      ],
+      "amountPaise": 3422000,
+      "artifactName": "APX-24-209.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          86,
+          122,
+          532,
+          710
+        ]
+      }
+    },
+    {
+      "documentId": "doc-ori-24-184",
+      "documentType": "sales-invoice",
+      "documentNumber": "ORI/24/184",
+      "documentDate": "2024-11-04",
+      "partyGuid": "party-orion-retailers",
+      "voucherGuids": [
+        "voucher-sal-3016",
+        "voucher-rct-4016"
+      ],
+      "amountPaise": 16726000,
+      "artifactName": "ORI-24-184.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          74,
+          106,
+          528,
+          696
+        ]
+      }
+    },
+    {
+      "documentId": "doc-ori-25-010",
+      "documentType": "sales-invoice",
+      "documentNumber": "ORI/25/010",
+      "documentDate": "2025-01-10",
+      "partyGuid": "party-orion-retailers",
+      "voucherGuids": [
+        "voucher-sal-3022"
+      ],
+      "amountPaise": 21830000,
+      "artifactName": "ORI-25-010.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          78,
+          118,
+          526,
+          690
+        ]
+      }
+    },
+    {
+      "documentId": "doc-nim-25-012",
+      "documentType": "freight-bill",
+      "documentNumber": "NIM/25/012",
+      "documentDate": "2025-01-12",
+      "partyGuid": "party-nimbus-logistics",
+      "voucherGuids": [
+        "voucher-pmt-1033"
+      ],
+      "amountPaise": 2875000,
+      "artifactName": "NIM-25-012.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          92,
+          132,
+          514,
+          668
+        ]
+      }
+    },
+    {
+      "documentId": "doc-kav-25-015",
+      "documentType": "supplier-bill",
+      "documentNumber": "KAV/25/015",
+      "documentDate": "2025-01-15",
+      "partyGuid": "party-kaveri-metals",
+      "voucherGuids": [
+        "voucher-pur-2033"
+      ],
+      "amountPaise": 5478000,
+      "artifactName": "KAV-25-015.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          80,
+          118,
+          516,
+          694
+        ]
+      }
+    },
+    {
+      "documentId": "doc-nim-25-044",
+      "documentType": "freight-bill",
+      "documentNumber": "NIM/25/044",
+      "documentDate": "2025-02-02",
+      "partyGuid": "party-nimbus-logistics",
+      "voucherGuids": [
+        "voucher-pmt-1042",
+        "voucher-pmt-1044"
+      ],
+      "amountPaise": 4720000,
+      "artifactName": "NIM-25-044.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          90,
+          128,
+          520,
+          686
+        ]
+      }
+    },
+    {
+      "documentId": "doc-apx-25-404",
+      "documentType": "supplier-bill",
+      "documentNumber": "APX/25/404",
+      "documentDate": "2025-04-02",
+      "partyGuid": "party-apex-traders",
+      "voucherGuids": [
+        "voucher-pur-2048"
+      ],
+      "amountPaise": 6490000,
+      "artifactName": "APX-25-404.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          82,
+          118,
+          530,
+          702
+        ]
+      }
+    },
+    {
+      "documentId": "doc-grn-25-041",
+      "documentType": "goods-receipt-note",
+      "documentNumber": "GRN/25/041",
+      "documentDate": "2025-04-04",
+      "partyGuid": "party-kaveri-metals",
+      "voucherGuids": [
+        "voucher-pur-2049"
+      ],
+      "amountPaise": 2820000,
+      "artifactName": "GRN-25-041.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          76,
+          124,
+          520,
+          684
+        ]
+      }
+    },
+    {
+      "documentId": "doc-dispatch-25-331",
+      "documentType": "dispatch-note",
+      "documentNumber": "DSP/25/331",
+      "documentDate": "2025-03-29",
+      "partyGuid": "party-orion-retailers",
+      "voucherGuids": [
+        "voucher-sal-3037"
+      ],
+      "amountPaise": 3540000,
+      "artifactName": "DSP-25-331.pdf",
+      "sourceLocation": {
+        "kind": "document",
+        "page": 1,
+        "bbox": [
+          70,
+          112,
+          524,
+          692
+        ]
+      }
+    }
+  ]
+}
+

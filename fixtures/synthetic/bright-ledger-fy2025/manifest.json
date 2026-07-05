@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "synthetic-fixture/v0.1",
+  "fixtureId": "bright-ledger-fy2025",
+  "fixtureName": "Bright Ledger FY2025",
+  "description": "Fictional Indian manufacturing audit engagement with planted v0 control exceptions.",
+  "engagement": {
+    "firmId": "firm-demo-shah-mehta",
+    "clientId": "client-bright-ledger",
+    "engagementId": "eng-bright-ledger-fy2025",
+    "clientLegalName": "Bright Ledger Components Private Limited",
+    "financialYear": {
+      "startsOn": "2024-04-01",
+      "endsOn": "2025-03-31",
+      "timezone": "Asia/Kolkata"
+    },
+    "materialityPaise": 25000000
+  },
+  "sourceFiles": [
+    {
+      "path": "artifacts/tally-daybook.xml",
+      "declaredType": "tally-xml",
+      "description": "Synthetic Tally-shaped voucher, ledger, and party export."
+    },
+    {
+      "path": "artifacts/tally-editlog.json",
+      "declaredType": "tally-editlog",
+      "description": "Synthetic edit-log export with feature state changes and voucher events."
+    },
+    {
+      "path": "artifacts/source-documents.json",
+      "declaredType": "synthetic",
+      "description": "Source document metadata for invoice dates, goods receipt dates, and document links."
+    }
+  ],
+  "controlSet": [
+    {
+      "controlId": "editlog-disabled-period",
+      "version": "0.1.0",
+      "title": "Edit log disabled during financial year"
+    },
+    {
+      "controlId": "editlog-gap",
+      "version": "0.1.0",
+      "title": "Posting activity while edit log is silent"
+    },
+    {
+      "controlId": "duplicate-payment",
+      "version": "0.1.0",
+      "title": "Duplicate payment by party, amount, and near date"
+    },
+    {
+      "controlId": "cutoff-yearend",
+      "version": "0.1.0",
+      "title": "Year-end voucher and source document date mismatch"
+    },
+    {
+      "controlId": "manual-journal-risk",
+      "version": "0.1.0",
+      "title": "Manual round-sum journal risk near year-end"
+    }
+  ],
+  "plantedDefects": [
+    {
+      "defectId": "DEF-EDITLOG-DISABLED-001",
+      "controlId": "editlog-disabled-period",
+      "expectedFindingId": "EXP-EDITLOG-DISABLED-001",
+      "description": "Edit log feature disabled from 2024-09-10T09:00:00+05:30 to 2024-09-17T18:00:00+05:30 while vouchers were entered.",
+      "sourceRefs": [
+        "elog-feature-disabled-2024-09-10",
+        "elog-feature-enabled-2024-09-17",
+        "voucher-pur-2025",
+        "voucher-pmt-1025"
+      ]
+    },
+    {
+      "defectId": "DEF-EDITLOG-GAP-001",
+      "controlId": "editlog-gap",
+      "expectedFindingId": "EXP-EDITLOG-GAP-001",
+      "description": "No edit-log events from 2025-01-05 to 2025-01-20 even though three vouchers were entered.",
+      "sourceRefs": [
+        "voucher-sal-3022",
+        "voucher-pmt-1033",
+        "voucher-pur-2033"
+      ]
+    },
+    {
+      "defectId": "DEF-DUP-PAY-001",
+      "controlId": "duplicate-payment",
+      "expectedFindingId": "EXP-DUP-PAY-001",
+      "description": "Apex Traders was paid INR 11,800 twice within two days against the same bill reference.",
+      "sourceRefs": [
+        "voucher-pmt-1007",
+        "voucher-pmt-1008",
+        "doc-apx-24-117"
+      ]
+    },
+    {
+      "defectId": "DEF-DUP-PAY-002",
+      "controlId": "duplicate-payment",
+      "expectedFindingId": "EXP-DUP-PAY-002",
+      "description": "Nimbus Logistics was paid INR 47,200 twice within five days against the same freight invoice.",
+      "sourceRefs": [
+        "voucher-pmt-1042",
+        "voucher-pmt-1044",
+        "doc-nim-25-044"
+      ]
+    },
+    {
+      "defectId": "DEF-CUTOFF-001",
+      "controlId": "cutoff-yearend",
+      "expectedFindingId": "EXP-CUTOFF-001",
+      "description": "Purchase voucher dated inside FY 2024-25 uses a supplier bill dated 2025-04-02.",
+      "sourceRefs": [
+        "voucher-pur-2048",
+        "doc-apx-25-404"
+      ]
+    },
+    {
+      "defectId": "DEF-CUTOFF-002",
+      "controlId": "cutoff-yearend",
+      "expectedFindingId": "EXP-CUTOFF-002",
+      "description": "Purchase voucher dated inside FY 2024-25 uses a goods receipt dated 2025-04-04.",
+      "sourceRefs": [
+        "voucher-pur-2049",
+        "doc-grn-25-041"
+      ]
+    },
+    {
+      "defectId": "DEF-CUTOFF-003",
+      "controlId": "cutoff-yearend",
+      "expectedFindingId": "EXP-CUTOFF-003",
+      "description": "Sales voucher dated after year-end uses a dispatch document dated 2025-03-29.",
+      "sourceRefs": [
+        "voucher-sal-3037",
+        "doc-dispatch-25-331"
+      ]
+    },
+    {
+      "defectId": "DEF-MANUAL-JOURNAL-001",
+      "controlId": "manual-journal-risk",
+      "expectedFindingId": "EXP-MANUAL-JOURNAL-001",
+      "description": "Three manual journals with round amounts were posted on 2025-03-31 to sensitive ledger heads.",
+      "sourceRefs": [
+        "voucher-jrn-9001",
+        "voucher-jrn-9002",
+        "voucher-jrn-9003"
+      ]
+    }
+  ],
+  "expectedExceptionCount": 8
+}
+

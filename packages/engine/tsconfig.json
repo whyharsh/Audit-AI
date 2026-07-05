@@ -7,6 +7,6 @@
     "declarationMap": true,
     "emitDeclarationOnly": true
   },
-  "include": ["index.ts", "types/**/*.ts"],
-  "exclude": ["types/**/*.test.ts"]
+  "include": ["index.ts", "types/**/*.ts", "ingest/**/*.ts", "controls/**/*.ts"],
+  "exclude": ["**/*.test.ts"]
 }

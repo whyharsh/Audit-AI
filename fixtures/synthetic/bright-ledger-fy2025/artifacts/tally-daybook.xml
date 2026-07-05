@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUDIT_EVIDENCE_SYNTHETIC_TALLY version="0.1">
+  <COMPANY>
+    <NAME>Bright Ledger Components Private Limited</NAME>
+    <COUNTRY>India</COUNTRY>
+    <BASECURRENCY>INR</BASECURRENCY>
+    <FINANCIALYEARSTART>2024-04-01</FINANCIALYEARSTART>
+    <FINANCIALYEAREND>2025-03-31</FINANCIALYEAREND>
+    <TIMEZONE>Asia/Kolkata</TIMEZONE>
+  </COMPANY>
+  <LEDGERS>
+    <LEDGER guid="ledger-hdfc-bank">
+      <NAME>HDFC Bank Current Account</NAME>
+      <KIND>asset</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-sales-components">
+      <NAME>Sales - Components</NAME>
+      <KIND>income</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-purchase-raw-materials">
+      <NAME>Purchase - Raw Materials</NAME>
+      <KIND>expense</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-freight">
+      <NAME>Freight and Cartage</NAME>
+      <KIND>expense</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-repairs">
+      <NAME>Repairs and Maintenance</NAME>
+      <KIND>expense</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-gst-input">
+      <NAME>GST Input</NAME>
+      <KIND>asset</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-gst-output">
+      <NAME>GST Output</NAME>
+      <KIND>liability</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-apex-traders">
+      <NAME>Apex Traders</NAME>
+      <KIND>liability</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-kaveri-metals">
+      <NAME>Kaveri Metals</NAME>
+      <KIND>liability</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-nimbus-logistics">
+      <NAME>Nimbus Logistics</NAME>
+      <KIND>liability</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-orion-retailers">
+      <NAME>Orion Retailers</NAME>
+      <KIND>asset</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-suspense">
+      <NAME>Suspense Account</NAME>
+      <KIND>asset</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-prior-period-expense">
+      <NAME>Prior Period Expense</NAME>
+      <KIND>expense</KIND>
+    </LEDGER>
+    <LEDGER guid="ledger-revenue-adjustment">
+      <NAME>Revenue Adjustment</NAME>
+      <KIND>income</KIND>
+    </LEDGER>
+  </LEDGERS>
+  <PARTIES>
+    <PARTY guid="party-apex-traders" ledgerGuid="ledger-apex-traders">
+      <NAME>Apex Traders</NAME>
+      <GSTIN>27AAXFA1234A1Z5</GSTIN>
+      <PAN>AAXFA1234A</PAN>
+    </PARTY>
+    <PARTY guid="party-kaveri-metals" ledgerGuid="ledger-kaveri-metals">
+      <NAME>Kaveri Metals</NAME>
+      <GSTIN>29AAKFK4321K1Z2</GSTIN>
+      <PAN>AAKFK4321K</PAN>
+    </PARTY>
+    <PARTY guid="party-nimbus-logistics" ledgerGuid="ledger-nimbus-logistics">
+      <NAME>Nimbus Logistics</NAME>
+      <GSTIN>27AAEFN7788F1Z1</GSTIN>
+      <PAN>AAEFN7788F</PAN>
+    </PARTY>
+    <PARTY guid="party-orion-retailers" ledgerGuid="ledger-orion-retailers">
+      <NAME>Orion Retailers</NAME>
+      <GSTIN>24AAECO9090Q1Z9</GSTIN>
+      <PAN>AAECO9090Q</PAN>
+    </PARTY>
+  </PARTIES>
+  <VOUCHERS>
+    <VOUCHER guid="voucher-pur-2001" number="PUR-2001" type="purchase" date="2024-04-05" enteredAt="2024-04-05T11:14:00+05:30" partyGuid="party-kaveri-metals" documentRef="doc-kav-24-041" totalAmountPaise="8360000">
+      <NARRATION>Raw material purchase from Kaveri Metals.</NARRATION>
+      <LINE accountGuid="ledger-purchase-raw-materials" debitPaise="7084746" creditPaise="0" />
+      <LINE accountGuid="ledger-gst-input" debitPaise="1275254" creditPaise="0" />
+      <LINE accountGuid="ledger-kaveri-metals" debitPaise="0" creditPaise="8360000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-sal-3001" number="SAL-3001" type="sales" date="2024-04-07" enteredAt="2024-04-07T15:42:00+05:30" partyGuid="party-orion-retailers" documentRef="doc-ori-24-071" totalAmountPaise="12508000">
+      <NARRATION>Sale of components to Orion Retailers.</NARRATION>
+      <LINE accountGuid="ledger-orion-retailers" debitPaise="12508000" creditPaise="0" />
+      <LINE accountGuid="ledger-sales-components" debitPaise="0" creditPaise="10599900" />
+      <LINE accountGuid="ledger-gst-output" debitPaise="0" creditPaise="1908100" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1001" number="PMT-1001" type="payment" date="2024-04-15" enteredAt="2024-04-15T16:05:00+05:30" partyGuid="party-kaveri-metals" documentRef="doc-kav-24-041" totalAmountPaise="8360000">
+      <NARRATION>Payment to Kaveri Metals against bill KAV/24/041.</NARRATION>
+      <LINE accountGuid="ledger-kaveri-metals" debitPaise="8360000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="8360000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-rct-4001" number="RCT-4001" type="receipt" date="2024-04-22" enteredAt="2024-04-22T12:10:00+05:30" partyGuid="party-orion-retailers" documentRef="doc-ori-24-071" totalAmountPaise="12508000">
+      <NARRATION>Receipt from Orion Retailers.</NARRATION>
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="12508000" creditPaise="0" />
+      <LINE accountGuid="ledger-orion-retailers" debitPaise="0" creditPaise="12508000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pur-2007" number="PUR-2007" type="purchase" date="2024-07-15" enteredAt="2024-07-15T10:45:00+05:30" partyGuid="party-apex-traders" documentRef="doc-apx-24-117" totalAmountPaise="1180000">
+      <NARRATION>Repair spares from Apex Traders.</NARRATION>
+      <LINE accountGuid="ledger-repairs" debitPaise="1000000" creditPaise="0" />
+      <LINE accountGuid="ledger-gst-input" debitPaise="180000" creditPaise="0" />
+      <LINE accountGuid="ledger-apex-traders" debitPaise="0" creditPaise="1180000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1007" number="PMT-1007" type="payment" date="2024-07-18" enteredAt="2024-07-18T17:24:00+05:30" partyGuid="party-apex-traders" documentRef="doc-apx-24-117" totalAmountPaise="1180000">
+      <NARRATION>Payment to Apex Traders for APX/24/117.</NARRATION>
+      <LINE accountGuid="ledger-apex-traders" debitPaise="1180000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="1180000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1008" number="PMT-1008" type="payment" date="2024-07-20" enteredAt="2024-07-20T12:03:00+05:30" partyGuid="party-apex-traders" documentRef="doc-apx-24-117" totalAmountPaise="1180000">
+      <NARRATION>Second payment to Apex Traders for APX/24/117.</NARRATION>
+      <LINE accountGuid="ledger-apex-traders" debitPaise="1180000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="1180000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pur-2025" number="PUR-2025" type="purchase" date="2024-09-12" enteredAt="2024-09-12T13:11:00+05:30" partyGuid="party-apex-traders" documentRef="doc-apx-24-209" totalAmountPaise="3422000">
+      <NARRATION>Machine spares purchased while edit log was disabled.</NARRATION>
+      <LINE accountGuid="ledger-repairs" debitPaise="2900000" creditPaise="0" />
+      <LINE accountGuid="ledger-gst-input" debitPaise="522000" creditPaise="0" />
+      <LINE accountGuid="ledger-apex-traders" debitPaise="0" creditPaise="3422000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1025" number="PMT-1025" type="payment" date="2024-09-15" enteredAt="2024-09-15T18:20:00+05:30" partyGuid="party-apex-traders" documentRef="doc-apx-24-209" totalAmountPaise="3422000">
+      <NARRATION>Payment to Apex Traders while edit log was disabled.</NARRATION>
+      <LINE accountGuid="ledger-apex-traders" debitPaise="3422000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="3422000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-sal-3016" number="SAL-3016" type="sales" date="2024-11-04" enteredAt="2024-11-04T10:25:00+05:30" partyGuid="party-orion-retailers" documentRef="doc-ori-24-184" totalAmountPaise="16726000">
+      <NARRATION>Sale of finished components.</NARRATION>
+      <LINE accountGuid="ledger-orion-retailers" debitPaise="16726000" creditPaise="0" />
+      <LINE accountGuid="ledger-sales-components" debitPaise="0" creditPaise="14174576" />
+      <LINE accountGuid="ledger-gst-output" debitPaise="0" creditPaise="2551424" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-rct-4016" number="RCT-4016" type="receipt" date="2024-11-18" enteredAt="2024-11-18T11:00:00+05:30" partyGuid="party-orion-retailers" documentRef="doc-ori-24-184" totalAmountPaise="16726000">
+      <NARRATION>Receipt from Orion Retailers.</NARRATION>
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="16726000" creditPaise="0" />
+      <LINE accountGuid="ledger-orion-retailers" debitPaise="0" creditPaise="16726000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-sal-3022" number="SAL-3022" type="sales" date="2025-01-10" enteredAt="2025-01-10T10:44:00+05:30" partyGuid="party-orion-retailers" documentRef="doc-ori-25-010" totalAmountPaise="21830000">
+      <NARRATION>Sale entered during edit-log silence gap.</NARRATION>
+      <LINE accountGuid="ledger-orion-retailers" debitPaise="21830000" creditPaise="0" />
+      <LINE accountGuid="ledger-sales-components" debitPaise="0" creditPaise="18499999" />
+      <LINE accountGuid="ledger-gst-output" debitPaise="0" creditPaise="3330001" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1033" number="PMT-1033" type="payment" date="2025-01-12" enteredAt="2025-01-12T14:18:00+05:30" partyGuid="party-nimbus-logistics" documentRef="doc-nim-25-012" totalAmountPaise="2875000">
+      <NARRATION>Freight payment entered during edit-log silence gap.</NARRATION>
+      <LINE accountGuid="ledger-nimbus-logistics" debitPaise="2875000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="2875000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pur-2033" number="PUR-2033" type="purchase" date="2025-01-15" enteredAt="2025-01-15T16:36:00+05:30" partyGuid="party-kaveri-metals" documentRef="doc-kav-25-015" totalAmountPaise="5478000">
+      <NARRATION>Purchase entered during edit-log silence gap.</NARRATION>
+      <LINE accountGuid="ledger-purchase-raw-materials" debitPaise="4642373" creditPaise="0" />
+      <LINE accountGuid="ledger-gst-input" debitPaise="835627" creditPaise="0" />
+      <LINE accountGuid="ledger-kaveri-metals" debitPaise="0" creditPaise="5478000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1042" number="PMT-1042" type="payment" date="2025-02-03" enteredAt="2025-02-03T12:48:00+05:30" partyGuid="party-nimbus-logistics" documentRef="doc-nim-25-044" totalAmountPaise="4720000">
+      <NARRATION>Payment to Nimbus Logistics for NIM/25/044.</NARRATION>
+      <LINE accountGuid="ledger-nimbus-logistics" debitPaise="4720000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="4720000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pmt-1044" number="PMT-1044" type="payment" date="2025-02-08" enteredAt="2025-02-08T15:05:00+05:30" partyGuid="party-nimbus-logistics" documentRef="doc-nim-25-044" totalAmountPaise="4720000">
+      <NARRATION>Second payment to Nimbus Logistics for NIM/25/044.</NARRATION>
+      <LINE accountGuid="ledger-nimbus-logistics" debitPaise="4720000" creditPaise="0" />
+      <LINE accountGuid="ledger-hdfc-bank" debitPaise="0" creditPaise="4720000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pur-2048" number="PUR-2048" type="purchase" date="2025-03-30" enteredAt="2025-03-30T17:55:00+05:30" partyGuid="party-apex-traders" documentRef="doc-apx-25-404" totalAmountPaise="6490000">
+      <NARRATION>Purchase recorded before year-end, supplier bill dated after year-end.</NARRATION>
+      <LINE accountGuid="ledger-purchase-raw-materials" debitPaise="5500000" creditPaise="0" />
+      <LINE accountGuid="ledger-gst-input" debitPaise="990000" creditPaise="0" />
+      <LINE accountGuid="ledger-apex-traders" debitPaise="0" creditPaise="6490000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-pur-2049" number="PUR-2049" type="purchase" date="2025-03-31" enteredAt="2025-03-31T09:42:00+05:30" partyGuid="party-kaveri-metals" documentRef="doc-grn-25-041" totalAmountPaise="2820000">
+      <NARRATION>Purchase recorded before year-end, goods receipt dated after year-end.</NARRATION>
+      <LINE accountGuid="ledger-purchase-raw-materials" debitPaise="2389831" creditPaise="0" />
+      <LINE accountGuid="ledger-gst-input" debitPaise="430169" creditPaise="0" />
+      <LINE accountGuid="ledger-kaveri-metals" debitPaise="0" creditPaise="2820000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-jrn-9001" number="JRN-9001" type="journal" date="2025-03-31" enteredAt="2025-03-31T18:48:00+05:30" totalAmountPaise="10000000">
+      <NARRATION>Manual year-end round-sum prior period expense adjustment.</NARRATION>
+      <LINE accountGuid="ledger-prior-period-expense" debitPaise="10000000" creditPaise="0" />
+      <LINE accountGuid="ledger-suspense" debitPaise="0" creditPaise="10000000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-jrn-9002" number="JRN-9002" type="journal" date="2025-03-31" enteredAt="2025-03-31T19:02:00+05:30" totalAmountPaise="25000000">
+      <NARRATION>Manual year-end round-sum revenue adjustment.</NARRATION>
+      <LINE accountGuid="ledger-suspense" debitPaise="25000000" creditPaise="0" />
+      <LINE accountGuid="ledger-revenue-adjustment" debitPaise="0" creditPaise="25000000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-jrn-9003" number="JRN-9003" type="journal" date="2025-03-31" enteredAt="2025-03-31T19:15:00+05:30" totalAmountPaise="5000000">
+      <NARRATION>Manual year-end round-sum suspense transfer.</NARRATION>
+      <LINE accountGuid="ledger-suspense" debitPaise="5000000" creditPaise="0" />
+      <LINE accountGuid="ledger-prior-period-expense" debitPaise="0" creditPaise="5000000" />
+    </VOUCHER>
+    <VOUCHER guid="voucher-sal-3037" number="SAL-3037" type="sales" date="2025-04-02" enteredAt="2025-04-02T10:08:00+05:30" partyGuid="party-orion-retailers" documentRef="doc-dispatch-25-331" totalAmountPaise="3540000">
+      <NARRATION>Sale recorded after year-end, dispatch document dated before year-end.</NARRATION>
+      <LINE accountGuid="ledger-orion-retailers" debitPaise="3540000" creditPaise="0" />
+      <LINE accountGuid="ledger-sales-components" debitPaise="0" creditPaise="3000000" />
+      <LINE accountGuid="ledger-gst-output" debitPaise="0" creditPaise="540000" />
+    </VOUCHER>
+  </VOUCHERS>
+</AUDIT_EVIDENCE_SYNTHETIC_TALLY>
+

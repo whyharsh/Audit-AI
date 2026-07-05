@@ -1,0 +1,181 @@
+{
+  "schemaVersion": "expected-findings/v0.1",
+  "fixtureId": "bright-ledger-fy2025",
+  "expectedFindings": [
+    {
+      "expectedFindingId": "EXP-EDITLOG-DISABLED-001",
+      "controlId": "editlog-disabled-period",
+      "status": "EXCEPTION",
+      "severity": "critical",
+      "title": "Edit log disabled during the financial year",
+      "detail": "Audit trail was disabled from 2024-09-10T09:00:00+05:30 to 2024-09-17T18:00:00+05:30. Vouchers PUR-2025 and PMT-1025 were entered during that interval.",
+      "sourceRefs": [
+        "elog-feature-disabled-2024-09-10",
+        "elog-feature-enabled-2024-09-17",
+        "voucher-pur-2025",
+        "voucher-pmt-1025"
+      ],
+      "data": {
+        "disabledFrom": "2024-09-10T09:00:00+05:30",
+        "disabledUntil": "2024-09-17T18:00:00+05:30",
+        "voucherNumbers": [
+          "PUR-2025",
+          "PMT-1025"
+        ]
+      }
+    },
+    {
+      "expectedFindingId": "EXP-EDITLOG-GAP-001",
+      "controlId": "editlog-gap",
+      "status": "EXCEPTION",
+      "severity": "high",
+      "title": "Posting activity found during edit-log silence gap",
+      "detail": "No edit-log events exist between 2025-01-05T17:45:00+05:30 and 2025-01-20T09:02:00+05:30, but three vouchers were entered in that period.",
+      "sourceRefs": [
+        "voucher-sal-3022",
+        "voucher-pmt-1033",
+        "voucher-pur-2033"
+      ],
+      "data": {
+        "gapStartsAfter": "2025-01-05T17:45:00+05:30",
+        "gapEndsBefore": "2025-01-20T09:02:00+05:30",
+        "voucherNumbers": [
+          "SAL-3022",
+          "PMT-1033",
+          "PUR-2033"
+        ]
+      }
+    },
+    {
+      "expectedFindingId": "EXP-DUP-PAY-001",
+      "controlId": "duplicate-payment",
+      "status": "EXCEPTION",
+      "severity": "medium",
+      "title": "Possible duplicate payment to Apex Traders",
+      "detail": "Payment vouchers PMT-1007 and PMT-1008 both pay Apex Traders INR 11,800 against bill APX/24/117 within two days.",
+      "sourceRefs": [
+        "voucher-pmt-1007",
+        "voucher-pmt-1008",
+        "doc-apx-24-117"
+      ],
+      "data": {
+        "partyName": "Apex Traders",
+        "amountPaise": 1180000,
+        "paymentVoucherNumbers": [
+          "PMT-1007",
+          "PMT-1008"
+        ],
+        "documentNumber": "APX/24/117",
+        "dateDistanceDays": 2
+      }
+    },
+    {
+      "expectedFindingId": "EXP-DUP-PAY-002",
+      "controlId": "duplicate-payment",
+      "status": "EXCEPTION",
+      "severity": "medium",
+      "title": "Possible duplicate payment to Nimbus Logistics",
+      "detail": "Payment vouchers PMT-1042 and PMT-1044 both pay Nimbus Logistics INR 47,200 against bill NIM/25/044 within five days.",
+      "sourceRefs": [
+        "voucher-pmt-1042",
+        "voucher-pmt-1044",
+        "doc-nim-25-044"
+      ],
+      "data": {
+        "partyName": "Nimbus Logistics",
+        "amountPaise": 4720000,
+        "paymentVoucherNumbers": [
+          "PMT-1042",
+          "PMT-1044"
+        ],
+        "documentNumber": "NIM/25/044",
+        "dateDistanceDays": 5
+      }
+    },
+    {
+      "expectedFindingId": "EXP-CUTOFF-001",
+      "controlId": "cutoff-yearend",
+      "status": "EXCEPTION",
+      "severity": "high",
+      "title": "Purchase recorded before year-end with post-year-end supplier bill",
+      "detail": "Voucher PUR-2048 is dated 2025-03-30, but supplier bill APX/25/404 is dated 2025-04-02.",
+      "sourceRefs": [
+        "voucher-pur-2048",
+        "doc-apx-25-404"
+      ],
+      "data": {
+        "voucherNumber": "PUR-2048",
+        "voucherDate": "2025-03-30",
+        "documentNumber": "APX/25/404",
+        "documentDate": "2025-04-02",
+        "amountPaise": 6490000
+      }
+    },
+    {
+      "expectedFindingId": "EXP-CUTOFF-002",
+      "controlId": "cutoff-yearend",
+      "status": "EXCEPTION",
+      "severity": "high",
+      "title": "Purchase recorded before year-end with post-year-end goods receipt",
+      "detail": "Voucher PUR-2049 is dated 2025-03-31, but goods receipt GRN/25/041 is dated 2025-04-04.",
+      "sourceRefs": [
+        "voucher-pur-2049",
+        "doc-grn-25-041"
+      ],
+      "data": {
+        "voucherNumber": "PUR-2049",
+        "voucherDate": "2025-03-31",
+        "documentNumber": "GRN/25/041",
+        "documentDate": "2025-04-04",
+        "amountPaise": 2820000
+      }
+    },
+    {
+      "expectedFindingId": "EXP-CUTOFF-003",
+      "controlId": "cutoff-yearend",
+      "status": "EXCEPTION",
+      "severity": "medium",
+      "title": "Sale recorded after year-end with pre-year-end dispatch",
+      "detail": "Voucher SAL-3037 is dated 2025-04-02, but dispatch note DSP/25/331 is dated 2025-03-29.",
+      "sourceRefs": [
+        "voucher-sal-3037",
+        "doc-dispatch-25-331"
+      ],
+      "data": {
+        "voucherNumber": "SAL-3037",
+        "voucherDate": "2025-04-02",
+        "documentNumber": "DSP/25/331",
+        "documentDate": "2025-03-29",
+        "amountPaise": 3540000
+      }
+    },
+    {
+      "expectedFindingId": "EXP-MANUAL-JOURNAL-001",
+      "controlId": "manual-journal-risk",
+      "status": "EXCEPTION",
+      "severity": "high",
+      "title": "Cluster of manual round-sum journals posted at year-end",
+      "detail": "Manual journals JRN-9001, JRN-9002, and JRN-9003 were posted on 2025-03-31 with round amounts and sensitive ledger heads.",
+      "sourceRefs": [
+        "voucher-jrn-9001",
+        "voucher-jrn-9002",
+        "voucher-jrn-9003"
+      ],
+      "data": {
+        "voucherNumbers": [
+          "JRN-9001",
+          "JRN-9002",
+          "JRN-9003"
+        ],
+        "voucherDate": "2025-03-31",
+        "totalClusterAmountPaise": 40000000,
+        "sensitiveLedgers": [
+          "Suspense Account",
+          "Prior Period Expense",
+          "Revenue Adjustment"
+        ]
+      }
+    }
+  ]
+}
+
