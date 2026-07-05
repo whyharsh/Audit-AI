@@ -9,8 +9,8 @@ import {
   buildNeighborhoodModel,
   buildTrailModel
 } from "./graphs";
-import type { CompiledQuestion } from "./explore";
-import { compileQuestion } from "./explore";
+import type { CompiledQuestion, QuestionSpec } from "./explore";
+import { compileQuestion, compileQuestionSpec } from "./explore";
 import { GraphSpace } from "./GraphSpace";
 import type { OverrideRecord, WorkspaceData } from "./types";
 import { CONTROL_META } from "./types";
@@ -27,6 +27,16 @@ interface Selection {
   readonly type: "finding" | "exploration";
   readonly findingId?: string;
 }
+
+type ModelAskResponse =
+  | {
+      readonly ok: true;
+      readonly spec: QuestionSpec;
+      readonly reason: string;
+      readonly confidence: number;
+      readonly model: string;
+    }
+  | { readonly ok: false; readonly message: string };
 
 const SESSION_ACTOR = "CA R. Sharma, partner";
 
@@ -69,6 +79,7 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
   const [question, setQuestion] = useState("");
   const [compiled, setCompiled] = useState<CompiledQuestion | null>(null);
   const [compileError, setCompileError] = useState<string | null>(null);
+  const [modelBusy, setModelBusy] = useState(false);
   const [exploration, setExploration] = useState<{
     compiled: CompiledQuestion;
     matches: ReturnType<CompiledQuestion["run"]>;
@@ -208,6 +219,49 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
     }
   }
 
+  async function askModel() {
+    setCompileError(null);
+    setCompiled(null);
+    setModelBusy(true);
+
+    try {
+      const response = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question,
+          context: buildAskContext(data)
+        })
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | ModelAskResponse
+        | null;
+
+      if (!payload || payload.ok === false) {
+        setCompileError(
+          payload?.message ?? "The model did not return a usable compiler response."
+        );
+        return;
+      }
+
+      const result = compileQuestionSpec(question, payload.spec, dataset, {
+        compiledBy: "model",
+        model: payload.model,
+        modelReason: payload.reason,
+        confidence: payload.confidence
+      });
+      if (result.ok) {
+        setCompiled(result.compiled);
+      } else {
+        setCompileError(result.message);
+      }
+    } catch {
+      setCompileError("Model compilation failed. Check the server log and API key.");
+    } finally {
+      setModelBusy(false);
+    }
+  }
+
   function runCompiled() {
     if (!compiled) {
       return;
@@ -264,13 +318,31 @@ export function Workspace({ data }: { readonly data: WorkspaceData }) {
             <button className="btn" type="button" onClick={compile}>
               Compile
             </button>
+            <button
+              className="btn"
+              type="button"
+              disabled={modelBusy}
+              onClick={askModel}
+            >
+              {modelBusy ? "Asking" : "Ask model"}
+            </button>
           </div>
           {compileError ? <p className="ask-note">{compileError}</p> : null}
           {compiled ? (
             <div className="compiled">
               <span className="mute small">
-                Compiled query, shown before execution
+                {compiled.compiledBy === "model"
+                  ? `Model compiled query via ${compiled.model ?? "OpenAI"}`
+                  : "Compiled query, shown before execution"}
               </span>
+              {compiled.modelReason ? (
+                <p className="ask-note">
+                  {compiled.modelReason}
+                  {compiled.confidence !== undefined
+                    ? ` Confidence ${compiled.confidence}/100.`
+                    : ""}
+                </p>
+              ) : null}
               <pre>{compiled.specJson}</pre>
               <button className="btn primary" type="button" onClick={runCompiled}>
                 Run compiled query
@@ -562,6 +634,27 @@ function amountPaiseFromData(data: CanonicalJsonValue): number | null {
 
   const amount = data["amountPaise"];
   return typeof amount === "number" ? amount : null;
+}
+
+function buildAskContext(data: WorkspaceData) {
+  return {
+    controls: CONTROL_META.map((control) => ({
+      id: control.id,
+      title: control.title,
+      assertion: control.assertion,
+      populationLabel: control.populationLabel
+    })),
+    parties: data.dataset.parties.map((party) => party.name),
+    voucherKinds: Array.from(
+      new Set(data.dataset.vouchers.map((voucher) => voucher.voucherKind))
+    ).sort(),
+    financialYear: data.dataset.engagement.financialYear,
+    supportedPredicates: [
+      "duplicate-payment-pairs",
+      "payments-to-party",
+      "round-sum-journals"
+    ]
+  };
 }
 
 function isCanonicalRecord(
