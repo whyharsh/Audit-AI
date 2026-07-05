@@ -1,0 +1,16 @@
+{
+  "name": "@audit-evidence/engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./index.ts",
+    "./types": "./types/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "test": "tsc --noEmit -p tsconfig.json"
+  }
+}

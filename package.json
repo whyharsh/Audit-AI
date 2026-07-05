@@ -1,0 +1,13 @@
+{
+  "name": "audit-evidence-ai",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter @audit-evidence/engine build",
+    "check": "pnpm --filter @audit-evidence/engine check",
+    "test": "pnpm --filter @audit-evidence/engine test"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
