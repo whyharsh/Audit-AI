@@ -107,7 +107,7 @@ export interface SyntheticDataset {
   readonly sourceDocuments: readonly SyntheticSourceDocument[];
 }
 
-interface SyntheticDatasetInput {
+export interface SyntheticDatasetInput {
   readonly manifestJson: string;
   readonly tallyXml: string;
   readonly editLogJson: string;

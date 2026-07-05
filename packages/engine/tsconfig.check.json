@@ -3,6 +3,12 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["index.ts", "types/**/*.ts", "ingest/**/*.ts", "controls/**/*.ts"],
+  "include": [
+    "index.ts",
+    "types/**/*.ts",
+    "ingest/**/*.ts",
+    "controls/**/*.ts",
+    "graph/**/*.ts"
+  ],
   "exclude": []
 }
