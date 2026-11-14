@@ -36,7 +36,7 @@ const INTERNAL_PATTERN: RuleCitation = {
   authority: "Audit Evidence AI",
   title: "Deterministic transaction graph control patterns",
   sourceKind: "internal-control-pattern",
-  sourceUrl: "https://github.com/PiyushVerma-001/Audit-AI",
+  sourceUrl: "https://github.com/whyharsh/Audit-AI",
   pinpoint: "Control library metadata linked to engine evidence requirements"
 };
 
