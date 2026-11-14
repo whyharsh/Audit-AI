@@ -4,7 +4,7 @@
 
 ### Follow every finding back to the evidence.
 
-An evidence-first financial audit workspace built by **[Harsh Gupta](https://github.com/whyharsh)**.
+An evidence-first financial audit workspace.
 
 Deterministic audit controls · Traceable transaction graphs · AI-assisted exploration
 
@@ -142,7 +142,3 @@ The included data is fictional. Rule citations describe the intended audit conte
 - [Design direction](DESIGN.md) — workspace interaction and visual design.
 - [Synthetic engagement](fixtures/synthetic/bright-ledger-fy2025/README.md) — fixture inputs and planted defects.
 - [Rule pack](packages/rules/india/mvp.ts) — implemented and specified rule definitions.
-
----
-
-Built by [Harsh Gupta](https://github.com/whyharsh).
