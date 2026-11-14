@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1110" viewBox="0 0 1120 1110" role="img" aria-labelledby="title desc">
+<title id="title">How Audit AI works</title>
+<desc id="desc">Synthetic Tally files are parsed into facts with provenance and a transaction graph. Five deterministic controls produce reproducible findings. Auditor questions pass through a local or optional AI compiler, a query preview, and deterministic execution against the same graph. Findings and exploration results lead into an evidence workspace where auditors inspect transactions and source excerpts.</desc>
+<defs><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="0.8" fill="#d8d8d0" opacity="0.55"/></pattern></defs>
+<rect width="1120" height="1110" rx="24" fill="#faf9f5"/>
+<rect x="18" y="18" width="1084" height="1074" rx="16" fill="url(#dots)"/>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#24364b}.sketch{font-family:'Chalkboard SE','Segoe Print','Comic Sans MS',cursive}.body{font-size:19px;fill:#63738a}.label{font-size:13px;font-weight:700;letter-spacing:2px}</style>
+<text x="54" y="55" font-size="20" style="fill:#377aaf" class="label">AUDIT AI / UNDER THE HOOD</text>
+<text x="52" y="108" font-size="43" style="fill:#24364b" class="sketch">From records to reasons.</text>
+<text x="54" y="143" font-size="21" style="fill:#63738a">AI translates the question. The engine evaluates the evidence.</text>
+<rect x="57" y="197" width="300" height="142" rx="15" fill="#377aaf" opacity="0.07"/>
+<path d="M 66,193 Q 204.0,190 343,193 Q 355,192 354,205 L 353,322 Q 354,335 341,334 L 66,333 Q 53,334 54,322 L 55,204 Q 54,192 66,193 Z" fill="#edf4fb" stroke="#377aaf" stroke-width="1.8"/>
+<path d="M 67,196 Q 204.0,193 341,195 M 351,206 L 350,321" fill="none" stroke="#377aaf" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="76" y="221" font-size="20" style="fill:#377aaf" class="label">01 / SOURCE MATERIAL</text>
+<text x="76" y="256" font-size="26" style="fill:#24364b" class="sketch">Start with records</text>
+<text x="76" y="288" font-size="20" style="fill:#24364b" class="body">Synthetic Tally XML, edit log,</text>
+<text x="76" y="313" font-size="20" style="fill:#24364b" class="body">and document metadata</text>
+<rect x="413" y="197" width="300" height="142" rx="15" fill="#377aaf" opacity="0.07"/>
+<path d="M 422,193 Q 560.0,190 699,193 Q 711,192 710,205 L 709,322 Q 710,335 697,334 L 422,333 Q 409,334 410,322 L 411,204 Q 410,192 422,193 Z" fill="#edf4fb" stroke="#377aaf" stroke-width="1.8"/>
+<path d="M 423,196 Q 560.0,193 697,195 M 707,206 L 706,321" fill="none" stroke="#377aaf" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="432" y="221" font-size="20" style="fill:#377aaf" class="label">02 / INGESTION</text>
+<text x="432" y="256" font-size="26" style="fill:#24364b" class="sketch">Attach provenance</text>
+<text x="432" y="288" font-size="20" style="fill:#24364b" class="body">Parse facts, hash artifacts,</text>
+<text x="432" y="313" font-size="20" style="fill:#24364b" class="body">and record provenance.</text>
+<rect x="769" y="197" width="300" height="142" rx="15" fill="#377aaf" opacity="0.07"/>
+<path d="M 778,193 Q 916.0,190 1055,193 Q 1067,192 1066,205 L 1065,322 Q 1066,335 1053,334 L 778,333 Q 765,334 766,322 L 767,204 Q 766,192 778,193 Z" fill="#edf4fb" stroke="#377aaf" stroke-width="1.8"/>
+<path d="M 779,196 Q 916.0,193 1053,195 M 1063,206 L 1062,321" fill="none" stroke="#377aaf" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="788" y="221" font-size="20" style="fill:#377aaf" class="label">03 / SHARED DATASET</text>
+<text x="788" y="256" font-size="26" style="fill:#24364b" class="sketch">Build the graph</text>
+<text x="788" y="288" font-size="20" style="fill:#24364b" class="body">Connect vouchers, parties,</text>
+<text x="788" y="313" font-size="20" style="fill:#24364b" class="body">accounts, and documents.</text>
+<path d="M 363,260 Q 381,258 400,261" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 391,256 L 400,261 L 392,268" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 720,260 Q 738,262 756,260" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 747,255 L 756,260 L 748,267" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 918,344 Q 920,366 918,390" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 912,381 L 918,390 L 924,382" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<rect x="769" y="405" width="300" height="142" rx="15" fill="#377aaf" opacity="0.07"/>
+<path d="M 778,401 Q 916.0,398 1055,401 Q 1067,400 1066,413 L 1065,530 Q 1066,543 1053,542 L 778,541 Q 765,542 766,530 L 767,412 Q 766,400 778,401 Z" fill="#edf4fb" stroke="#377aaf" stroke-width="1.8"/>
+<path d="M 779,404 Q 916.0,401 1053,403 M 1063,414 L 1062,529" fill="none" stroke="#377aaf" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="788" y="429" font-size="20" style="fill:#377aaf" class="label">04 / CONTROL ENGINE</text>
+<text x="788" y="464" font-size="26" style="fill:#24364b" class="sketch">Run five controls</text>
+<text x="788" y="496" font-size="20" style="fill:#24364b" class="body">Duplicates, cutoff, edit logs,</text>
+<text x="788" y="521" font-size="20" style="fill:#24364b" class="body">and manual-journal risk.</text>
+<path d="M 918,552 Q 920,582 918,612" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 912,603 L 918,612 L 924,604" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<rect x="769" y="627" width="300" height="142" rx="15" fill="#377aaf" opacity="0.07"/>
+<path d="M 778,623 Q 916.0,620 1055,623 Q 1067,622 1066,635 L 1065,752 Q 1066,765 1053,764 L 778,763 Q 765,764 766,752 L 767,634 Q 766,622 778,623 Z" fill="#edf4fb" stroke="#377aaf" stroke-width="1.8"/>
+<path d="M 779,626 Q 916.0,623 1053,625 M 1063,636 L 1062,751" fill="none" stroke="#377aaf" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="788" y="651" font-size="20" style="fill:#377aaf" class="label">05 / REPRODUCIBLE OUTPUT</text>
+<text x="788" y="686" font-size="26" style="fill:#24364b" class="sketch">Inspect the findings</text>
+<text x="788" y="718" font-size="20" style="fill:#24364b" class="body">Stable IDs, source references,</text>
+<text x="788" y="743" font-size="20" style="fill:#24364b" class="body">and repeatable results.</text>
+<rect x="57" y="405" width="300" height="142" rx="15" fill="#bf7039" opacity="0.07"/>
+<path d="M 66,401 Q 204.0,398 343,401 Q 355,400 354,413 L 353,530 Q 354,543 341,542 L 66,541 Q 53,542 54,530 L 55,412 Q 54,400 66,401 Z" fill="#fff1e4" stroke="#bf7039" stroke-width="1.8"/>
+<path d="M 67,404 Q 204.0,401 341,403 M 351,414 L 350,529" fill="none" stroke="#bf7039" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="76" y="429" font-size="20" style="fill:#bf7039" class="label">EXPLORATION / AUDITOR INPUT</text>
+<text x="76" y="464" font-size="26" style="fill:#24364b" class="sketch">Ask a question</text>
+<text x="76" y="496" font-size="20" style="fill:#24364b" class="body">“Show duplicate payments”</text>
+<text x="76" y="521" font-size="20" style="fill:#24364b" class="body">“Show round sum journals”</text>
+<rect x="413" y="405" width="300" height="142" rx="15" fill="#bf7039" opacity="0.07"/>
+<path d="M 422,401 Q 560.0,398 699,401 Q 711,400 710,413 L 709,530 Q 710,543 697,542 L 422,541 Q 409,542 410,530 L 411,412 Q 410,400 422,401 Z" fill="#fff1e4" stroke="#bf7039" stroke-width="1.8"/>
+<path d="M 423,404 Q 560.0,401 697,403 M 707,414 L 706,529" fill="none" stroke="#bf7039" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="432" y="429" font-size="20" style="fill:#bf7039" class="label">QUESTION COMPILER</text>
+<text x="432" y="464" font-size="26" style="fill:#24364b" class="sketch">Translate into a query</text>
+<text x="432" y="496" font-size="20" style="fill:#24364b" class="body">Local patterns or an optional</text>
+<text x="432" y="521" font-size="20" style="fill:#24364b" class="body">AI compiler → supported spec.</text>
+<path d="M 363,471 Q 382,469 400,471" fill="none" stroke="#bf7039" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 391,466 L 400,471 L 392,478" fill="none" stroke="#bf7039" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 560,552 Q 562,584 560,612" fill="none" stroke="#bf7039" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 554,603 L 560,612 L 566,604" fill="none" stroke="#bf7039" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<rect x="413" y="627" width="300" height="142" rx="15" fill="#bf7039" opacity="0.07"/>
+<path d="M 422,623 Q 560.0,620 699,623 Q 711,622 710,635 L 709,752 Q 710,765 697,764 L 422,763 Q 409,764 410,752 L 411,634 Q 410,622 422,623 Z" fill="#fff1e4" stroke="#bf7039" stroke-width="1.8"/>
+<path d="M 423,626 Q 560.0,623 697,625 M 707,636 L 706,751" fill="none" stroke="#bf7039" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="432" y="651" font-size="20" style="fill:#bf7039" class="label">PREVIEW → EXECUTE</text>
+<text x="432" y="686" font-size="26" style="fill:#24364b" class="sketch">Review it, then run it</text>
+<text x="432" y="718" font-size="20" style="fill:#24364b" class="body">Inspect the query specification.</text>
+<text x="432" y="743" font-size="20" style="fill:#24364b" class="body">Execute against the dataset.</text>
+<path d="M 1066,263 Q 1088,262 1088,286 L 1088,584 Q 1088,594 1075,594 L 734,594 Q 728,594 728,606 L 728,692" fill="none" stroke="#377aaf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1" stroke-dasharray="6 6"/>
+<path d="M 728,692 L 720,692" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 729,686 L 720,692 L 728,698" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<text x="1068" y="581" font-size="15" style="fill:#377aaf" text-anchor="end">same graph</text>
+<text x="66" y="660" font-size="23" style="fill:#bf7039" class="sketch">A bounded role for AI</text>
+<text x="66" y="693" font-size="18" style="fill:#63738a">It proposes a query;</text>
+<text x="66" y="719" font-size="18" style="fill:#63738a">the deterministic engine</text>
+<text x="66" y="745" font-size="18" style="fill:#63738a">computes the result.</text>
+<path d="M 67,673 Q 176,680 280,672" fill="none" stroke="#bf7039" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+<path d="M 560,775 Q 558,811 560,849" fill="none" stroke="#bf7039" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 554,840 L 560,849 L 566,841" fill="none" stroke="#bf7039" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 918,775 Q 920,811 918,849" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 912,840 L 918,849 L 924,841" fill="none" stroke="#377aaf" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<text x="576" y="819" font-size="15" style="fill:#bf7039">exploration results</text>
+<text x="935" y="819" font-size="15" style="fill:#377aaf">findings</text>
+<rect x="57" y="865" width="1012" height="191" rx="15" fill="#7962a5" opacity="0.07"/>
+<path d="M 66,861 Q 560.0,858 1055,861 Q 1067,860 1066,873 L 1065,1039 Q 1066,1052 1053,1051 L 66,1050 Q 53,1051 54,1039 L 55,872 Q 54,860 66,861 Z" fill="#f0edf8" stroke="#7962a5" stroke-width="1.8"/>
+<path d="M 67,864 Q 560.0,861 1053,863 M 1063,874 L 1062,1038" fill="none" stroke="#7962a5" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round" opacity="0.35"/>
+<text x="78" y="892" font-size="20" style="fill:#7962a5" class="label">06 / AUDITOR WORKSPACE</text>
+<text x="78" y="930" font-size="30" style="fill:#24364b" class="sketch">Follow the trail. Make the judgment.</text>
+<rect x="78" y="950" width="242" height="42" rx="10" fill="#faf9fd" stroke="#c7bddb"/>
+<text x="199.0" y="977" font-size="20" style="fill:#7962a5" text-anchor="middle">Evidence graph</text>
+<rect x="414" y="950" width="242" height="42" rx="10" fill="#faf9fd" stroke="#c7bddb"/>
+<text x="535.0" y="977" font-size="20" style="fill:#7962a5" text-anchor="middle">Transaction graph</text>
+<rect x="750" y="950" width="288" height="42" rx="10" fill="#faf9fd" stroke="#c7bddb"/>
+<text x="894.0" y="977" font-size="20" style="fill:#7962a5" text-anchor="middle">Source excerpt</text>
+<path d="M 336,971 Q 365,968 396,971" fill="none" stroke="#7962a5" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 387,966 L 396,971 L 388,978" fill="none" stroke="#7962a5" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 672,971 Q 702,973 732,971" fill="none" stroke="#7962a5" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<path d="M 723,966 L 732,971 L 724,978" fill="none" stroke="#7962a5" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+<text x="78" y="1025" font-size="18" style="fill:#63738a">Inspect source evidence · Replay a finding · Record a review in the demo</text>
+<text x="56" y="1084" font-size="20" style="fill:#63738a" class="label">CURRENT IMPLEMENTATION</text>
+<text x="1064" y="1084" font-size="15" style="fill:#63738a" text-anchor="end">Synthetic fixture demo · Optional model compiler</text>
+</svg>

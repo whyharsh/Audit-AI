@@ -78,19 +78,7 @@ The [fixture manifest](fixtures/synthetic/bright-ledger-fy2025/manifest.json) de
 
 ## How it works
 
-```mermaid
-flowchart TD
-    A["Synthetic Tally XML, edit log, and document metadata"] --> B["Parse and materialize facts with provenance"]
-    B --> C["Transaction graph"]
-    C --> D["Five deterministic audit controls"]
-    D --> E["Findings with stable IDs and source references"]
-    E --> F["Evidence graph → transaction graph → source excerpt"]
-    Q["Auditor question"] --> K["Local or optional AI compiler"]
-    K --> S["Preview query specification"]
-    S --> X["Execute supported predicate against the dataset"]
-    C --> X
-    X --> F
-```
+[![How Audit AI works: source records become a transaction graph; audit controls and compiled questions feed an evidence workspace.](docs/images/how-it-works.png)](docs/images/how-it-works.svg)
 
 The engine is a framework-independent TypeScript package. The Next.js application loads fixture artifacts and renders the workspace around engine results. The rule pack supplies definitions, implementation status, evidence requirements, and citation metadata.
 
