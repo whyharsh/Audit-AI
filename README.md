@@ -142,3 +142,7 @@ The included data is fictional. Rule citations describe the intended audit conte
 - [Design direction](DESIGN.md) — workspace interaction and visual design.
 - [Synthetic engagement](fixtures/synthetic/bright-ledger-fy2025/README.md) — fixture inputs and planted defects.
 - [Rule pack](packages/rules/india/mvp.ts) — implemented and specified rule definitions.
+
+## License
+
+Licensed under the [MIT License](LICENSE).
